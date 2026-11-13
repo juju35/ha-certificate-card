@@ -1,0 +1,102 @@
+name: Release
+
+# Publishes a GitHub release whenever main carries a version that has no tag yet:
+# bump "version" in package.json, add its CHANGELOG.md section, push, and the release follows.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  # A version is published only once Lint, Validate and HACS Validation pass on this commit.
+  lint:
+    uses: ./.github/workflows/lint.yml
+    permissions:
+      contents: read
+
+  validate:
+    uses: ./.github/workflows/validate.yml
+    permissions:
+      contents: read
+
+  hacs:
+    uses: ./.github/workflows/hacs.yml
+    permissions:
+      contents: read
+
+  release:
+    needs: [lint, validate, hacs]
+    runs-on: ubuntu-latest
+    # Debian 12 container (Node 22 included): apt goes to the Debian mirrors, not the runner's Ubuntu ones,
+    # which kept failing. The job runs as root, hence no sudo below.
+    container: node:22-bookworm
+    # In a container, run steps default to sh (dash, no pipefail): keep bash.
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      # The workspace is owned by another user than the container's root: let git work in it.
+      - name: Trust the checkout
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Read version
+        id: version
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          test -n "$VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install dependencies
+        if: steps.version.outputs.exists == 'false'
+        run: npm ci
+
+      # The browser download (no apt) is kept apart from its system libraries, so the apt work all
+      # sits in one time-boxed, retried step and a hung mirror or an unsupported distro cannot
+      # permanently fail the job.
+      - name: Install Chromium for the browser tests
+        if: steps.version.outputs.exists == 'false'
+        run: npx playwright install chromium
+
+      - name: Install Chromium system deps
+        if: steps.version.outputs.exists == 'false'
+        timeout-minutes: 12
+        run: .github/scripts/install-chromium-deps.sh
+
+      - name: Run tests
+        if: steps.version.outputs.exists == 'false'
+        run: npm test
+
+      - name: Check build and notes
+        if: steps.version.outputs.exists == 'false'
+        run: |
+          npm run check
+          .github/scripts/release-notes.sh "${{ steps.version.outputs.version }}" > notes.md
+          test -s notes.md
+
+      - name: Publish release
+        if: steps.version.outputs.exists == 'false'
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: v${{ steps.version.outputs.version }}
+          target_commitish: ${{ github.sha }}
+          files: dist/*.js
+          body_path: notes.md
+          make_latest: true

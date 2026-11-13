@@ -1,0 +1,91 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+  # Called by Release, so that a version is published only once these checks pass.
+  workflow_call:
+
+permissions:
+  contents: read
+
+# github.workflow is "Release" when called from Release: the group then stays distinct from this
+# workflow's own push run on main, so neither cancels the other. The event too: the checks the screenshot commit
+# dispatches on a pull request's branch have their own group, so a dispatched run stuck on GitHub's side (queued
+# with no job, impossible to cancel) cannot hold the pull request's own runs, nor theirs.
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.event_name }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  version:
+    name: Version consistency
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # The checks the release makes, before merging: a version bumped in one file only fails the release on main.
+      - name: Same version everywhere, and in the changelog
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          test "$(node -p "require('./package-lock.json').version")" = "$VERSION" || { echo "::error file=package-lock.json::package-lock.json is not at $VERSION (npm install)"; exit 1; }
+          grep -q "^## $VERSION " CHANGELOG.md || { echo "::error file=CHANGELOG.md::no '## $VERSION' entry in CHANGELOG.md"; exit 1; }
+          echo "Version $VERSION everywhere"
+
+  build:
+    name: Build & check
+    runs-on: ubuntu-latest
+    # Debian 12 container (Node 22 included): apt goes to the Debian mirrors, not the runner's Ubuntu ones,
+    # which kept failing. The job runs as root, hence no sudo below.
+    container: node:22-bookworm
+    # In a container, run steps default to sh (dash, no pipefail): keep bash.
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # The workspace is owned by another user than the container's root: let git work in it.
+      - name: Trust the checkout
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Read the Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('./package-lock.json').packages['node_modules/playwright'].version")" >> "$GITHUB_OUTPUT"
+
+      # The Chromium download is cached between runs; only a Playwright bump re-downloads it.
+      - name: Cache the Playwright browser
+        id: playwright-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      # The browser download (no apt) is kept apart from its system libraries, so the apt work all
+      # sits in one time-boxed, retried step and a hung mirror or an unsupported distro cannot
+      # permanently fail the job.
+      - name: Install Chromium for the browser tests
+        run: npx playwright install chromium
+
+      - name: Install Chromium system deps
+        timeout-minutes: 12
+        run: .github/scripts/install-chromium-deps.sh
+
+      - name: Build and check the card
+        run: npm run check
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Check hacs.json points to the built file
+        run: |
+          file=$(node -p "require('./hacs.json').filename")
+          test -f "dist/$file" || { echo "dist/$file not built"; exit 1; }

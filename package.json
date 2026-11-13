@@ -1,0 +1,19 @@
+{
+  "name": "ha-certificate-card",
+  "version": "1.0.0",
+  "description": "Lovelace cards for Home Assistant to monitor SSL/TLS certificate expiry (Certificate Expiry) and basic DNS checks.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/build.mjs && node --check dist/certificate-card.js",
+    "screenshots": "node scripts/screenshots.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "acorn": "^8.15.0",
+    "css-tree": "^3.1.0",
+    "playwright": "^1.56.1"
+  }
+}
