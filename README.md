@@ -8,6 +8,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/juju35/ha-certificate-card/blob/main/LICENSE)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/julienstep9)
 
+<p align="center"><img src="https://raw.githubusercontent.com/juju35/ha-certificate-card/main/images/logo.svg" alt="Certificate Card" width="120"></p>
+
 Lovelace cards for Home Assistant to keep an eye on your SSL/TLS certificates: which one expires next, how many days are left, which ones are already expired or invalid — plus a few basic DNS checks.
 
 Supported integrations:
