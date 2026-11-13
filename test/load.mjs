@@ -27,10 +27,16 @@ export const load = (file, names) => {
     Date,
     setInterval,
     clearInterval,
+    setTimeout,
+    clearTimeout,
   };
   // The clock the card counts from, pinned by the tests in their own realm: read through, so that the card (in this
   // context) sees it too, and the expectations do not depend on the time of day the tests run.
   Object.defineProperty(context, "__CERT_CARD_NOW__", { get: () => globalThis.__CERT_CARD_NOW__ });
   vm.createContext(context);
-  return vm.runInContext(`${src}\n;({ ${names.join(", ")} })`, context);
+  // The DOM morphing needs a real DOM: the tests swap it for a plain innerHTML replacement (as in ha-alarm-card), and
+  // fail loudly if a refactor moved the block out of the pattern's reach.
+  const patched = src.replace(/const morph = \(root, html\) => \{[\s\S]*?\n\};/, "const morph = (root, html) => { root.innerHTML = html; };");
+  if (patched === src) throw new Error("test/load.mjs: the morph block was not found in the card source — update the replacement pattern.");
+  return vm.runInContext(`${patched}\n;({ ${names.join(", ")} })`, context);
 };
