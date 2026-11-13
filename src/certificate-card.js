@@ -1119,6 +1119,42 @@ const svgIcon = (path, cls = "") => `<svg class="icon ${cls}" viewBox="0 0 24 24
 
 // A click inside a dialog (more-info opened from the card, say) is not a click outside the card.
 const inDialog = (ev) => ev.composedPath().some((n) => ["ha-more-info-dialog", "ha-dialog", "dialog"].includes(n.localName));
+const isOutside = (card, ev) => !ev.composedPath().includes(card) && !inDialog(ev);
+
+// "A click elsewhere" is caught on the pointer, not only on the click event: on iOS (Safari and the companion app)
+// a tap on something that is not clickable (the background, an empty spot, a card with no action) sends no click to
+// the page. It counts when the press and the release are both outside the card (a slider dragged out of the card
+// does not fold it), and a scroll does not count (the browser cancels the pointer). Keyboard clicks still go through
+// the click event. `tap(ev)` (press and release at the same spot) is for the tests.
+const watchOutside = (isOut, handler) => {
+  let downOutside = false;
+  const onDown = (ev) => {
+    downOutside = isOut(ev);
+  };
+  const onUp = (ev) => {
+    if (downOutside && isOut(ev)) handler(ev);
+    downOutside = false;
+  };
+  const onClick = (ev) => {
+    if (ev.detail === 0 && isOut(ev)) handler(ev);
+  };
+  return {
+    on() {
+      document.addEventListener("pointerdown", onDown, true);
+      document.addEventListener("pointerup", onUp, true);
+      document.addEventListener("click", onClick, true);
+    },
+    tap(ev) {
+      onDown(ev);
+      onUp(ev);
+    },
+    off() {
+      document.removeEventListener("pointerdown", onDown, true);
+      document.removeEventListener("pointerup", onUp, true);
+      document.removeEventListener("click", onClick, true);
+    },
+  };
+};
 
 // ---------------------------------------------------------------------------
 // Entities
@@ -1385,12 +1421,17 @@ class CertificateBase extends HTMLElement {
 
   connectedCallback() {
     // A click elsewhere on the page folds the sections back to their defaults (as in ha-carburants-france).
-    this._onOutside ??= (ev) => {
-      if (!this._folds || !Object.keys(this._folds).length || ev.composedPath().includes(this) || inDialog(ev)) return;
-      this._folds = {};
-      this._update();
-    };
-    document.addEventListener("click", this._onOutside, true);
+    this._outside ??= watchOutside(
+      (ev) => isOutside(this, ev),
+      () => {
+        if (!this._folds || !Object.keys(this._folds).length) return;
+        this._folds = {};
+        this._update();
+      },
+    );
+    this._outside.on();
+    // Back on the page after leaving it: rendered again in its default state.
+    if (this._hass && this._config) this._update();
     // The days left move on with time: checked every minute, rendered only when a value shown changed.
     this._timer ??= setInterval(() => {
       if (this._hass && this._config && !sameSig(this._signature(), this._sig)) this._update();
@@ -1398,7 +1439,10 @@ class CertificateBase extends HTMLElement {
   }
 
   disconnectedCallback() {
-    document.removeEventListener("click", this._onOutside, true);
+    this._outside?.off();
+    // Left (another dashboard view, a conditional card hidden): back to the defaults, so that the card does not come
+    // back unfolded.
+    this._folds = {};
     clearInterval(this._timer);
     this._timer = undefined;
   }
@@ -1619,19 +1663,24 @@ class CertificateMiniCard extends CertificateCard {
     super();
     this._zoomed = false;
     this.shadowRoot.addEventListener("click", (ev) => this._zoomClick(ev));
-    this._onUnzoom = (ev) => {
-      if (this._zoomed && !ev.composedPath().includes(this) && !inDialog(ev)) this._setZoom(false);
-    };
+    this._unzoom = watchOutside(
+      (ev) => isOutside(this, ev),
+      () => {
+        if (this._zoomed) this._setZoom(false);
+      },
+    );
   }
 
   connectedCallback() {
     super.connectedCallback();
-    document.addEventListener("click", this._onUnzoom, true);
+    this._unzoom.on();
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    document.removeEventListener("click", this._onUnzoom, true);
+    this._unzoom.off();
+    // Back to the compact view once off the screen (see the full card).
+    this._zoomed = false;
   }
 
   // A config change (the editor, say) starts over from the compact view.

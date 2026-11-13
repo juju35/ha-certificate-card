@@ -168,3 +168,43 @@ test("mini card: the most urgent certificates, counters and a detail button", ()
   assert.match(card._render(), /class="item cert/);
   same(card.getGridOptions(), { columns: 12, min_columns: 6, rows: "auto" });
 });
+
+test("folding: a tap elsewhere (pointer), not a press inside released outside; leaving the page folds back", () => {
+  const { card } = render(CertificateCard);
+  // No DOM here to morph into: the state is read through _render().
+  card._update = () => {};
+  card.connectedCallback();
+  const dnsOpen = () => /item dns/.test(card._render());
+  const unfold = () => card._onClick({ composedPath: () => [{ dataset: { action: "fold", section: "dns" } }], stopPropagation() {} });
+  unfold();
+  assert.ok(dnsOpen());
+  // Pressed in the card and released outside: nothing folds.
+  card._outside.tap({ composedPath: () => [card] });
+  assert.ok(dnsOpen());
+  // A tap in a Home Assistant dialog does not fold either.
+  card._outside.tap({ composedPath: () => [{ localName: "ha-more-info-dialog" }] });
+  assert.ok(dnsOpen());
+  // A tap on a spot that sends no click (iOS): the pointer alone folds it.
+  card._outside.tap({ composedPath: () => [] });
+  assert.ok(!dnsOpen());
+  // Left with the section open and back: folded.
+  unfold();
+  card.disconnectedCallback();
+  card.connectedCallback();
+  assert.ok(!dnsOpen());
+  card.disconnectedCallback();
+  // The mini card comes back compact.
+  const { card: mini } = render(CertificateMiniCard);
+  mini._update = () => {};
+  mini.connectedCallback();
+  mini._setZoom(true);
+  assert.match(mini._render(), /class="item cert/);
+  mini._unzoom.tap({ composedPath: () => [] });
+  assert.equal(mini._zoomed, false);
+  mini._setZoom(true);
+  mini.disconnectedCallback();
+  mini.connectedCallback();
+  assert.equal(mini._zoomed, false);
+  assert.doesNotMatch(mini._render(), /class="item cert/);
+  mini.disconnectedCallback();
+});
