@@ -1397,6 +1397,24 @@ class CertificateBase extends HTMLElement {
     this.attachShadow({ mode: "open" });
     this._html = "";
     this.shadowRoot.addEventListener("click", (ev) => this._onClick(ev));
+    this.shadowRoot.addEventListener("pointerdown", () => {
+      // No update of the card between the press and the release: the patch keeps the nodes in place, but an element
+      // appearing in front of the one pressed (a chip, a row) shifts its siblings, so that the element under the
+      // pointer can change and the click land elsewhere or nowhere. The pending render is done once released (after
+      // the click).
+      this._pressing = true;
+      window.addEventListener("pointerup", this._onPressEnd, true);
+      window.addEventListener("pointercancel", this._onPressEnd, true);
+    });
+    this._onPressEnd = () => {
+      window.removeEventListener("pointerup", this._onPressEnd, true);
+      window.removeEventListener("pointercancel", this._onPressEnd, true);
+      // After the click (same task): a press with no click (released elsewhere) draws what it held back.
+      setTimeout(() => {
+        this._pressing = false;
+        if (this._dirty) this._update();
+      }, 0);
+    };
     // Keyboard access: Enter or Space on a focusable non-button element acts as a click.
     this.shadowRoot.addEventListener("keydown", (ev) => {
       if ((ev.key === "Enter" || ev.key === " ") && ev.target.getAttribute?.("role") === "button") {
@@ -1440,6 +1458,9 @@ class CertificateBase extends HTMLElement {
 
   disconnectedCallback() {
     this._outside?.off();
+    this._pressing = false;
+    window.removeEventListener("pointerup", this._onPressEnd, true);
+    window.removeEventListener("pointercancel", this._onPressEnd, true);
     // Left (another dashboard view, a conditional card hidden): back to the defaults, so that the card does not come
     // back unfolded.
     this._folds = {};
@@ -1483,6 +1504,12 @@ class CertificateBase extends HTMLElement {
 
   _update(sig) {
     if (!this._hass || !this._config) return;
+    // Not under a press (see the pointerdown listener): drawn once released.
+    if (this._pressing) {
+      this._dirty = true;
+      return;
+    }
+    this._dirty = false;
     this._sig = sig ?? this._signature();
     const html = this._render();
     if (html !== this._html) {
@@ -1492,6 +1519,7 @@ class CertificateBase extends HTMLElement {
   }
 
   _onClick(ev) {
+    this._pressing = false;
     const el = ev.composedPath().find((n) => n.dataset && (n.dataset.entity || n.dataset.action));
     if (!el) return;
     ev.stopPropagation();

@@ -208,3 +208,31 @@ test("folding: a tap elsewhere (pointer), not a press inside released outside; l
   assert.doesNotMatch(mini._render(), /class="item cert/);
   mini.disconnectedCallback();
 });
+
+test("no update under a press: the click renders at once, a release without a click draws what was held", async () => {
+  globalThis.__CERT_CARD_NOW__ = NOW;
+  const card = new CertificateCard();
+  card.setConfig({});
+  card.hass = hass();
+  card.connectedCallback();
+  // The minute timer of the card is real here: always stopped, so that the test run ends.
+  try {
+  const html = () => card.shadowRoot.innerHTML;
+  const before = html();
+  card._pressing = true;
+  card.hass = hass({ language: "fr", locale: { language: "fr" } });
+  assert.equal(html(), before, "no update under the pointer");
+  card._onClick({ composedPath: () => [{ dataset: { action: "fold", section: "dns" } }], stopPropagation() {} });
+  assert.match(html(), /Prochaine expiration/, "the click renders at once");
+  assert.match(html(), /item dns/);
+  // Pressed and released elsewhere (no click): the held update is drawn after the release.
+  card._pressing = true;
+  card.hass = hass();
+  assert.match(html(), /Prochaine expiration/);
+  card._onPressEnd();
+  await new Promise((r) => setTimeout(r, 0));
+  assert.match(html(), /Next expiry/);
+  } finally {
+    card.disconnectedCallback();
+  }
+});
