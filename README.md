@@ -10,6 +10,13 @@
 
 <p align="center"><img src="https://raw.githubusercontent.com/juju35/ha-certificate-card/main/images/logo.svg" alt="Certificate Card" width="120"></p>
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/juju35/ha-certificate-card/main/images/cert_expiry.svg" alt="Certificate Expiry" width="64">&nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/juju35/ha-certificate-card/main/images/whois.png" alt="Whois" width="64">&nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/juju35/ha-certificate-card/main/images/dnsip.svg" alt="DNS IP" width="64">&nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/juju35/ha-certificate-card/main/images/ping.svg" alt="Ping" width="64">
+</p>
+
 Lovelace cards for Home Assistant to keep an eye on your SSL/TLS certificates and your domain names: which one expires next, how many days are left, which ones are already expired or invalid — plus a few basic DNS checks.
 
 Supported integrations:
