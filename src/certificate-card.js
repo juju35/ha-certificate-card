@@ -6,8 +6,9 @@
  * its expiry date and the days left, coloured against configurable thresholds and sorted by expiry. Optional basic DNS
  * checks from existing entities: DNS IP sensors (core, dnsip: is the host name resolved?) and connectivity binary
  * sensors such as Ping (is the host reachable?).
- * Certificate Expiry and DNS IP entities are found through the entity registry (platform), so they work whatever the
- * Home Assistant language or entity ids.
+ * Domain names watched by the Whois integration (core, whois) are listed with their own expiry, next to the certificates.
+ * Certificate Expiry, Whois and DNS IP entities are found through the entity registry (platform), so they work whatever
+ * the Home Assistant language or entity ids.
  */
 
 const VERSION = "__VERSION__";
@@ -23,6 +24,8 @@ const ICONS = {
     "M10,17A2,2 0 0,1 8,15C8,13.89 8.89,13 10,13A2,2 0 0,1 12,15A2,2 0 0,1 10,17M16,22V10A2,2 0 0,0 14,8H13V6C13,3.24 10.76,1 8,1C5.24,1 3,3.24 3,6V8H2A2,2 0 0,0 0,10V20A2,2 0 0,0 2,22H16M5,6A3,3 0 0,1 8,3A3,3 0 0,1 11,6V8H5V6M20,15H22V17H20V15M20,7H22V13H20V7Z",
   // mdi:timer-sand
   sand: "M6,2H18V8H18V8L14,12L18,16V16H18V22H6V16H6V16L10,12L6,8V8H6V2M16,16.5L12,12.5L8,16.5V20H16V16.5M12,11.5L16,7.5V4H8V7.5L12,11.5M10,6H14V6.75L12,8.75L10,6.75V6Z",
+  // mdi:web
+  web: "M16.36,14C16.44,13.34 16.5,12.68 16.5,12C16.5,11.32 16.44,10.66 16.36,10H19.74C19.9,10.64 20,11.31 20,12C20,12.69 19.9,13.36 19.74,14M14.59,19.56C15.19,18.45 15.65,17.25 15.97,16H18.92C17.96,17.65 16.43,18.93 14.59,19.56M14.34,14H9.66C9.56,13.34 9.5,12.68 9.5,12C9.5,11.32 9.56,10.65 9.66,10H14.34C14.43,10.65 14.5,11.32 14.5,12C14.5,12.68 14.43,13.34 14.34,14M12,19.96C11.17,18.76 10.5,17.43 10.09,16H13.91C13.5,17.43 12.83,18.76 12,19.96M8,8H5.08C6.03,6.34 7.57,5.06 9.4,4.44C8.8,5.55 8.35,6.75 8,8M5.08,16H8C8.35,17.25 8.8,18.45 9.4,19.56C7.57,18.93 6.03,17.65 5.08,16M4.26,14C4.1,13.36 4,12.69 4,12C4,11.31 4.1,10.64 4.26,10H7.64C7.56,10.66 7.5,11.32 7.5,12C7.5,12.68 7.56,13.34 7.64,14M12,4.03C12.83,5.23 13.5,6.57 13.91,8H10.09C10.5,6.57 11.17,5.23 12,4.03M18.92,8H15.97C15.65,6.75 15.19,5.55 14.59,4.44C16.43,5.07 17.96,6.34 18.92,8M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z",
   // mdi:dns
   dns: "M7,9A2,2 0 0,1 5,7A2,2 0 0,1 7,5A2,2 0 0,1 9,7A2,2 0 0,1 7,9M20,3H4A1,1 0 0,0 3,4V10A1,1 0 0,0 4,11H20A1,1 0 0,0 21,10V4A1,1 0 0,0 20,3M7,19A2,2 0 0,1 5,17A2,2 0 0,1 7,15A2,2 0 0,1 9,17A2,2 0 0,1 7,19M20,13H4A1,1 0 0,0 3,14V20A1,1 0 0,0 4,21H20A1,1 0 0,0 21,20V14A1,1 0 0,0 20,13Z",
   alert: "M13 14H11V9H13M13 18H11V16H13M1 21H23L12 2L1 21Z",
@@ -38,6 +41,7 @@ const STRINGS = {
   en: {
     certificates: "Certificates",
     dns: "DNS checks",
+    domains: "Domain names",
     valid: "Valid",
     expiring: "Expiring soon",
     expired: "Expired",
@@ -72,6 +76,8 @@ const STRINGS = {
     max_items: "Certificates listed",
     show_dns: "Show DNS checks",
     dns_entities: "DNS checks (empty: every DNS IP sensor)",
+    show_domains: "Show domain names (Whois)",
+    domain_entities: "Domain names (empty: every Whois sensor)",
     expand_dns: "DNS checks expanded by default",
     zoom: "Detail button",
     zoom_helper: "Switches the mini card to the full card and back",
@@ -81,6 +87,7 @@ const STRINGS = {
   fr: {
     certificates: "Certificats",
     dns: "Contrôles DNS",
+    domains: "Noms de domaine",
     valid: "Valides",
     expiring: "Expire bientôt",
     expired: "Expiré",
@@ -114,6 +121,8 @@ const STRINGS = {
     max_items: "Certificats listés",
     show_dns: "Afficher les contrôles DNS",
     dns_entities: "Contrôles DNS (vide : tous les capteurs DNS IP)",
+    show_domains: "Afficher les noms de domaine (Whois)",
+    domain_entities: "Noms de domaine (vide : tous les capteurs Whois)",
     expand_dns: "Contrôles DNS dépliés par défaut",
     zoom: "Bouton de détail",
     zoom_helper: "Bascule la mini-carte en carte complète, et inversement",
@@ -123,6 +132,7 @@ const STRINGS = {
   de: {
     certificates: "Zertifikate",
     dns: "DNS-Prüfungen",
+    domains: "Domainnamen",
     valid: "Gültig",
     expiring: "Läuft bald ab",
     expired: "Abgelaufen",
@@ -156,6 +166,8 @@ const STRINGS = {
     max_items: "Aufgelistete Zertifikate",
     show_dns: "DNS-Prüfungen anzeigen",
     dns_entities: "DNS-Prüfungen (leer: alle DNS-IP-Sensoren)",
+    show_domains: "Domainnamen anzeigen (Whois)",
+    domain_entities: "Domainnamen (leer: alle Whois-Sensoren)",
     expand_dns: "DNS-Prüfungen standardmäßig ausgeklappt",
     zoom: "Detailschaltfläche",
     zoom_helper: "Schaltet die Mini-Karte zur vollständigen Karte um und zurück",
@@ -165,6 +177,7 @@ const STRINGS = {
   es: {
     certificates: "Certificados",
     dns: "Comprobaciones DNS",
+    domains: "Nombres de dominio",
     valid: "Válidos",
     expiring: "Caduca pronto",
     expired: "Caducado",
@@ -198,6 +211,8 @@ const STRINGS = {
     max_items: "Certificados listados",
     show_dns: "Mostrar las comprobaciones DNS",
     dns_entities: "Comprobaciones DNS (vacío: todos los sensores DNS IP)",
+    show_domains: "Mostrar los nombres de dominio (Whois)",
+    domain_entities: "Nombres de dominio (vacío: todos los sensores Whois)",
     expand_dns: "Comprobaciones DNS desplegadas por defecto",
     zoom: "Botón de detalle",
     zoom_helper: "Cambia la minitarjeta a la tarjeta completa y viceversa",
@@ -207,6 +222,7 @@ const STRINGS = {
   sr: {
     certificates: "Сертификати",
     dns: "DNS провере",
+    domains: "Имена домена",
     valid: "Важећи",
     expiring: "Ускоро истиче",
     expired: "Истекао",
@@ -240,6 +256,8 @@ const STRINGS = {
     max_items: "Приказани сертификати",
     show_dns: "Прикажи DNS провере",
     dns_entities: "DNS провере (празно: сви DNS IP сензори)",
+    show_domains: "Прикажи имена домена (Whois)",
+    domain_entities: "Имена домена (празно: сви Whois сензори)",
     expand_dns: "DNS провере подразумевано отворене",
     zoom: "Дугме за детаље",
     zoom_helper: "Пребацује мини картицу на целу картицу и назад",
@@ -249,6 +267,7 @@ const STRINGS = {
   "sr-Latn": {
     certificates: "Sertifikati",
     dns: "DNS provere",
+    domains: "Imena domena",
     valid: "Važeći",
     expiring: "Uskoro ističe",
     expired: "Istekao",
@@ -282,6 +301,8 @@ const STRINGS = {
     max_items: "Prikazani sertifikati",
     show_dns: "Prikaži DNS provere",
     dns_entities: "DNS provere (prazno: svi DNS IP senzori)",
+    show_domains: "Prikaži imena domena (Whois)",
+    domain_entities: "Imena domena (prazno: svi Whois senzori)",
     expand_dns: "DNS provere podrazumevano otvorene",
     zoom: "Dugme za detalje",
     zoom_helper: "Prebacuje mini karticu na celu karticu i nazad",
@@ -291,6 +312,7 @@ const STRINGS = {
   it: {
     certificates: "Certificati",
     dns: "Controlli DNS",
+    domains: "Nomi di dominio",
     valid: "Validi",
     expiring: "In scadenza",
     expired: "Scaduto",
@@ -324,6 +346,8 @@ const STRINGS = {
     max_items: "Certificati elencati",
     show_dns: "Mostra i controlli DNS",
     dns_entities: "Controlli DNS (vuoto: tutti i sensori DNS IP)",
+    show_domains: "Mostra i nomi di dominio (Whois)",
+    domain_entities: "Nomi di dominio (vuoto: tutti i sensori Whois)",
     expand_dns: "Controlli DNS espansi per impostazione predefinita",
     zoom: "Pulsante dettagli",
     zoom_helper: "Passa dalla mini scheda alla scheda completa e viceversa",
@@ -333,6 +357,7 @@ const STRINGS = {
   nl: {
     certificates: "Certificaten",
     dns: "DNS-controles",
+    domains: "Domeinnamen",
     valid: "Geldig",
     expiring: "Verloopt binnenkort",
     expired: "Verlopen",
@@ -366,6 +391,8 @@ const STRINGS = {
     max_items: "Getoonde certificaten",
     show_dns: "DNS-controles tonen",
     dns_entities: "DNS-controles (leeg: alle DNS IP-sensoren)",
+    show_domains: "Domeinnamen tonen (Whois)",
+    domain_entities: "Domeinnamen (leeg: alle Whois-sensoren)",
     expand_dns: "DNS-controles standaard uitgeklapt",
     zoom: "Detailknop",
     zoom_helper: "Schakelt de minikaart naar de volledige kaart en terug",
@@ -375,6 +402,7 @@ const STRINGS = {
   pt: {
     certificates: "Certificados",
     dns: "Verificações DNS",
+    domains: "Nomes de domínio",
     valid: "Válidos",
     expiring: "Expira em breve",
     expired: "Expirado",
@@ -408,6 +436,8 @@ const STRINGS = {
     max_items: "Certificados listados",
     show_dns: "Mostrar as verificações DNS",
     dns_entities: "Verificações DNS (vazio: todos os sensores DNS IP)",
+    show_domains: "Mostrar os nomes de domínio (Whois)",
+    domain_entities: "Nomes de domínio (vazio: todos os sensores Whois)",
     expand_dns: "Verificações DNS expandidas por predefinição",
     zoom: "Botão de detalhe",
     zoom_helper: "Alterna o mini cartão para o cartão completo e vice-versa",
@@ -417,6 +447,7 @@ const STRINGS = {
   pl: {
     certificates: "Certyfikaty",
     dns: "Kontrole DNS",
+    domains: "Nazwy domen",
     valid: "Ważne",
     expiring: "Wkrótce wygasa",
     expired: "Wygasł",
@@ -450,6 +481,8 @@ const STRINGS = {
     max_items: "Wyświetlane certyfikaty",
     show_dns: "Pokaż kontrole DNS",
     dns_entities: "Kontrole DNS (puste: wszystkie czujniki DNS IP)",
+    show_domains: "Pokaż nazwy domen (Whois)",
+    domain_entities: "Nazwy domen (puste: wszystkie czujniki Whois)",
     expand_dns: "Kontrole DNS domyślnie rozwinięte",
     zoom: "Przycisk szczegółów",
     zoom_helper: "Przełącza minikartę na pełną kartę i z powrotem",
@@ -459,6 +492,7 @@ const STRINGS = {
   ro: {
     certificates: "Certificate",
     dns: "Verificări DNS",
+    domains: "Nume de domeniu",
     valid: "Valide",
     expiring: "Expiră curând",
     expired: "Expirat",
@@ -492,6 +526,8 @@ const STRINGS = {
     max_items: "Certificate listate",
     show_dns: "Afișează verificările DNS",
     dns_entities: "Verificări DNS (gol: toți senzorii DNS IP)",
+    show_domains: "Afișează numele de domeniu (Whois)",
+    domain_entities: "Nume de domeniu (gol: toți senzorii Whois)",
     expand_dns: "Verificări DNS extinse implicit",
     zoom: "Buton de detalii",
     zoom_helper: "Comută mini cardul la cardul complet și înapoi",
@@ -501,6 +537,7 @@ const STRINGS = {
   da: {
     certificates: "Certifikater",
     dns: "DNS-tjek",
+    domains: "Domænenavne",
     valid: "Gyldige",
     expiring: "Udløber snart",
     expired: "Udløbet",
@@ -534,6 +571,8 @@ const STRINGS = {
     max_items: "Viste certifikater",
     show_dns: "Vis DNS-tjek",
     dns_entities: "DNS-tjek (tom: alle DNS IP-sensorer)",
+    show_domains: "Vis domænenavne (Whois)",
+    domain_entities: "Domænenavne (tom: alle Whois-sensorer)",
     expand_dns: "DNS-tjek foldet ud som standard",
     zoom: "Detaljeknap",
     zoom_helper: "Skifter minikortet til hele kortet og tilbage",
@@ -543,6 +582,7 @@ const STRINGS = {
   sv: {
     certificates: "Certifikat",
     dns: "DNS-kontroller",
+    domains: "Domännamn",
     valid: "Giltiga",
     expiring: "Löper snart ut",
     expired: "Utgånget",
@@ -576,6 +616,8 @@ const STRINGS = {
     max_items: "Listade certifikat",
     show_dns: "Visa DNS-kontroller",
     dns_entities: "DNS-kontroller (tomt: alla DNS IP-sensorer)",
+    show_domains: "Visa domännamn (Whois)",
+    domain_entities: "Domännamn (tomt: alla Whois-sensorer)",
     expand_dns: "DNS-kontroller utfällda som standard",
     zoom: "Detaljknapp",
     zoom_helper: "Växlar minikortet till hela kortet och tillbaka",
@@ -585,6 +627,7 @@ const STRINGS = {
   bg: {
     certificates: "Сертификати",
     dns: "DNS проверки",
+    domains: "Имена на домейни",
     valid: "Валидни",
     expiring: "Изтича скоро",
     expired: "Изтекъл",
@@ -618,6 +661,8 @@ const STRINGS = {
     max_items: "Показани сертификати",
     show_dns: "Покажи DNS проверките",
     dns_entities: "DNS проверки (празно: всички сензори DNS IP)",
+    show_domains: "Показване на имената на домейни (Whois)",
+    domain_entities: "Имена на домейни (празно: всички сензори Whois)",
     expand_dns: "DNS проверките са разгънати по подразбиране",
     zoom: "Бутон за подробности",
     zoom_helper: "Превключва мини картата към цялата карта и обратно",
@@ -627,6 +672,7 @@ const STRINGS = {
   ru: {
     certificates: "Сертификаты",
     dns: "Проверки DNS",
+    domains: "Доменные имена",
     valid: "Действительны",
     expiring: "Скоро истекает",
     expired: "Истёк",
@@ -660,6 +706,8 @@ const STRINGS = {
     max_items: "Показанные сертификаты",
     show_dns: "Показывать проверки DNS",
     dns_entities: "Проверки DNS (пусто: все датчики DNS IP)",
+    show_domains: "Показывать доменные имена (Whois)",
+    domain_entities: "Доменные имена (пусто: все датчики Whois)",
     expand_dns: "Проверки DNS развёрнуты по умолчанию",
     zoom: "Кнопка подробностей",
     zoom_helper: "Переключает мини-карточку на полную карточку и обратно",
@@ -669,6 +717,7 @@ const STRINGS = {
   uk: {
     certificates: "Сертифікати",
     dns: "Перевірки DNS",
+    domains: "Доменні імена",
     valid: "Дійсні",
     expiring: "Незабаром спливає",
     expired: "Сплив",
@@ -702,6 +751,8 @@ const STRINGS = {
     max_items: "Показані сертифікати",
     show_dns: "Показувати перевірки DNS",
     dns_entities: "Перевірки DNS (порожньо: усі датчики DNS IP)",
+    show_domains: "Показувати доменні імена (Whois)",
+    domain_entities: "Доменні імена (порожньо: усі датчики Whois)",
     expand_dns: "Перевірки DNS розгорнуті за замовчуванням",
     zoom: "Кнопка подробиць",
     zoom_helper: "Перемикає міні-картку на повну картку і назад",
@@ -711,6 +762,7 @@ const STRINGS = {
   hu: {
     certificates: "Tanúsítványok",
     dns: "DNS-ellenőrzések",
+    domains: "Domainnevek",
     valid: "Érvényes",
     expiring: "Hamarosan lejár",
     expired: "Lejárt",
@@ -744,6 +796,8 @@ const STRINGS = {
     max_items: "Listázott tanúsítványok",
     show_dns: "DNS-ellenőrzések megjelenítése",
     dns_entities: "DNS-ellenőrzések (üres: minden DNS IP érzékelő)",
+    show_domains: "Domainnevek megjelenítése (Whois)",
+    domain_entities: "Domainnevek (üres: minden Whois érzékelő)",
     expand_dns: "DNS-ellenőrzések alapértelmezetten kibontva",
     zoom: "Részletek gomb",
     zoom_helper: "A minikártyát a teljes kártyára váltja és vissza",
@@ -753,6 +807,7 @@ const STRINGS = {
   sk: {
     certificates: "Certifikáty",
     dns: "Kontroly DNS",
+    domains: "Doménové mená",
     valid: "Platné",
     expiring: "Čoskoro vyprší",
     expired: "Vypršal",
@@ -786,6 +841,8 @@ const STRINGS = {
     max_items: "Zobrazené certifikáty",
     show_dns: "Zobraziť kontroly DNS",
     dns_entities: "Kontroly DNS (prázdne: všetky senzory DNS IP)",
+    show_domains: "Zobraziť doménové mená (Whois)",
+    domain_entities: "Doménové mená (prázdne: všetky senzory Whois)",
     expand_dns: "Kontroly DNS predvolene rozbalené",
     zoom: "Tlačidlo podrobností",
     zoom_helper: "Prepína minikartu na celú kartu a späť",
@@ -795,6 +852,7 @@ const STRINGS = {
   cs: {
     certificates: "Certifikáty",
     dns: "Kontroly DNS",
+    domains: "Doménová jména",
     valid: "Platné",
     expiring: "Brzy vyprší",
     expired: "Vypršel",
@@ -828,6 +886,8 @@ const STRINGS = {
     max_items: "Zobrazené certifikáty",
     show_dns: "Zobrazit kontroly DNS",
     dns_entities: "Kontroly DNS (prázdné: všechny senzory DNS IP)",
+    show_domains: "Zobrazit doménová jména (Whois)",
+    domain_entities: "Doménová jména (prázdné: všechny senzory Whois)",
     expand_dns: "Kontroly DNS ve výchozím stavu rozbalené",
     zoom: "Tlačítko podrobností",
     zoom_helper: "Přepíná minikartu na celou kartu a zpět",
@@ -837,6 +897,7 @@ const STRINGS = {
   sl: {
     certificates: "Potrdila",
     dns: "Preverjanja DNS",
+    domains: "Domenska imena",
     valid: "Veljavna",
     expiring: "Kmalu poteče",
     expired: "Poteklo",
@@ -870,6 +931,8 @@ const STRINGS = {
     max_items: "Prikazana potrdila",
     show_dns: "Prikaži preverjanja DNS",
     dns_entities: "Preverjanja DNS (prazno: vsi senzorji DNS IP)",
+    show_domains: "Prikaži domenska imena (Whois)",
+    domain_entities: "Domenska imena (prazno: vsi senzorji Whois)",
     expand_dns: "Preverjanja DNS privzeto razširjena",
     zoom: "Gumb za podrobnosti",
     zoom_helper: "Preklopi mini kartico na celotno kartico in nazaj",
@@ -879,6 +942,7 @@ const STRINGS = {
   lv: {
     certificates: "Sertifikāti",
     dns: "DNS pārbaudes",
+    domains: "Domēna vārdi",
     valid: "Derīgi",
     expiring: "Drīz beigsies",
     expired: "Beidzies",
@@ -912,6 +976,8 @@ const STRINGS = {
     max_items: "Parādītie sertifikāti",
     show_dns: "Rādīt DNS pārbaudes",
     dns_entities: "DNS pārbaudes (tukšs: visi DNS IP sensori)",
+    show_domains: "Rādīt domēna vārdus (Whois)",
+    domain_entities: "Domēna vārdi (tukšs: visi Whois sensori)",
     expand_dns: "DNS pārbaudes pēc noklusējuma izvērstas",
     zoom: "Detaļu poga",
     zoom_helper: "Pārslēdz mini kartīti uz pilno kartīti un atpakaļ",
@@ -921,6 +987,7 @@ const STRINGS = {
   el: {
     certificates: "Πιστοποιητικά",
     dns: "Έλεγχοι DNS",
+    domains: "Ονόματα τομέα",
     valid: "Έγκυρα",
     expiring: "Λήγει σύντομα",
     expired: "Έληξε",
@@ -954,6 +1021,8 @@ const STRINGS = {
     max_items: "Εμφανιζόμενα πιστοποιητικά",
     show_dns: "Εμφάνιση ελέγχων DNS",
     dns_entities: "Έλεγχοι DNS (κενό: όλοι οι αισθητήρες DNS IP)",
+    show_domains: "Εμφάνιση ονομάτων τομέα (Whois)",
+    domain_entities: "Ονόματα τομέα (κενό: όλοι οι αισθητήρες Whois)",
     expand_dns: "Έλεγχοι DNS ανεπτυγμένοι από προεπιλογή",
     zoom: "Κουμπί λεπτομερειών",
     zoom_helper: "Εναλλάσσει τη μίνι κάρτα στην πλήρη κάρτα και πίσω",
@@ -1018,8 +1087,9 @@ const now = () => globalThis.__CERT_CARD_NOW__ ?? Date.now();
 
 const DAY = 864e5;
 const HOUR = 36e5;
-// Days left drawn as a full bar: a Let's Encrypt certificate lives 90 days.
+// Days left drawn as a full bar: a Let's Encrypt certificate lives 90 days, a domain name is renewed every year.
 const BAR_DAYS = 90;
+const DOMAIN_BAR_DAYS = 365;
 const THRESHOLDS = { warning_days: 30, critical_days: 7 };
 const OFF = new Set(["unavailable", "unknown"]);
 
@@ -1189,6 +1259,24 @@ const findCerts = (hass, config = {}) => {
   return list.filter((i) => !exclude.has(i.entity));
 };
 
+// The domain names: `domain_entities` when set, else every Whois "days until expiration" sensor (enabled by default,
+// it carries the expiry date and the registrar as attributes), minus `exclude`. The registry gives its translation key;
+// without it, the Whois sensor holding a number of days is the one.
+const isWhoisExpiry = (hass, id) => {
+  const tk = hass.entities?.[id]?.translation_key;
+  return tk ? tk === "days_until_expiration" : hass.states?.[id]?.attributes?.unit_of_measurement === "d";
+};
+const findDomains = (hass, config = {}) => {
+  if (config.show_domains === false) return [];
+  const exclude = new Set(Array.isArray(config.exclude) ? config.exclude : []);
+  let list = items(config.domain_entities);
+  if (!list.length)
+    list = byPlatform(hass, "whois", "sensor")
+      .filter((id) => isWhoisExpiry(hass, id))
+      .map((entity) => ({ entity }));
+  return list.filter((i) => !exclude.has(i.entity)).map((i) => ({ ...i, type: "domain" }));
+};
+
 // The DNS checks: `dns_entities` when set, else every DNS IP sensor.
 const findDns = (hass, config = {}) => {
   if (config.show_dns === false) return [];
@@ -1210,22 +1298,27 @@ const nameOf = (hass, item) => {
   return fn?.replace(SUFFIX, "").trim() || fn || item.entity;
 };
 
-// One certificate: { entity, name, cls (ok, warn, crit, idle), kind, expiry (ms), left (ms), error }.
-// A timestamp sensor gives the expiry date; a numeric sensor (an older "days left" sensor) the days left.
+// A date attribute ("2027-06-12T10:00:00", no time zone with Whois: UTC), as ms, or NaN.
+const parseDate = (v) => (typeof v === "string" && v ? Date.parse(/[zZ]|[+-]\d\d:?\d\d$/.test(v) || !v.includes("T") ? v : `${v}Z`) : Number.NaN);
+
+// One certificate or domain name: { entity, name, type, cls (ok, warn, crit, idle), kind, expiry (ms), left (ms), error,
+// registrar }. A timestamp sensor gives the expiry date; a numeric sensor (Whois, an older "days left" sensor) the days
+// left, or the exact date when it carries it (`expires`).
 const certInfo = (hass, config, item, at = now()) => {
   const s = hass?.states?.[item.entity];
-  const base = { entity: item.entity, name: nameOf(hass, item), expiry: null, left: null, error: null };
+  const base = { entity: item.entity, name: nameOf(hass, item), type: item.type || "cert", expiry: null, left: null, error: null, registrar: null };
   if (!s || OFF.has(s.state)) return { ...base, cls: "idle", kind: s?.state === "unknown" ? "unknown" : "unavailable" };
   const a = s.attributes || {};
   let expiry = Date.parse(s.state);
   if (!Number.isFinite(expiry) || /^-?\d+(\.\d+)?$/.test(s.state)) {
     const days = Number.parseFloat(s.state);
     if (!Number.isFinite(days)) return { ...base, cls: "idle", kind: "unknown" };
-    expiry = at + days * DAY;
+    const exact = parseDate(a.expires);
+    expiry = Number.isFinite(exact) ? exact : at + days * DAY;
   }
   const left = expiry - at;
   const [warn, crit] = thresholds(config);
-  const info = { ...base, expiry, left };
+  const info = { ...base, expiry, left, registrar: typeof a.registrar === "string" && a.registrar ? a.registrar : null };
   if (a.is_valid === false) return { ...info, cls: "crit", kind: "invalid", error: a.error || null };
   if (left <= 0) return { ...info, cls: "crit", kind: "expired" };
   if (left < crit * DAY) return { ...info, cls: "crit", kind: "expiring" };
@@ -1376,6 +1469,7 @@ const MINI_STYLE = `
   .row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(24px, 72px) auto; align-items: center; gap: 8px; font-size: 13px; }
   .row .lbl { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
   .row .lbl span { overflow: hidden; text-overflow: ellipsis; }
+  .row .lbl .web { width: 12px; height: 12px; color: var(--c); margin: 0 -3px; }
   @container (max-width: 229px) {
     .row { grid-template-columns: minmax(0, 1fr) auto; }
     .row .bar { display: none; }
@@ -1486,19 +1580,22 @@ class CertificateBase extends HTMLElement {
     return fmtLang(this._hass, this._config);
   }
 
-  // The certificates (sorted by expiry) and the DNS checks the card shows.
+  // The certificates and the domain names (each sorted by expiry, and together in `all`) and the DNS checks the card
+  // shows.
   _model() {
     const at = now();
-    const certs = sortCerts(findCerts(this._hass, this._config).map((i) => certInfo(this._hass, this._config, i, at)));
+    const info = (list) => sortCerts(list.map((i) => certInfo(this._hass, this._config, i, at)));
+    const certs = info(findCerts(this._hass, this._config));
+    const domains = info(findDomains(this._hass, this._config));
     const dns = findDns(this._hass, this._config).map((i) => dnsInfo(this._hass, i));
-    return { certs, dns, at };
+    return { certs, domains, all: sortCerts([...certs, ...domains]), dns, at };
   }
 
   // What the render depends on: registries, language, the minute and the states of the listed entities.
   _signature() {
     const h = this._hass;
     const sig = [h.entities, h.devices, h.language, h.locale?.language, Math.floor(now() / 6e4)];
-    for (const i of [...findCerts(h, this._config), ...findDns(h, this._config)]) sig.push(h.states?.[i.entity]);
+    for (const i of [...findCerts(h, this._config), ...findDomains(h, this._config), ...findDns(h, this._config)]) sig.push(h.states?.[i.entity]);
     return sig;
   }
 
@@ -1571,7 +1668,8 @@ class CertificateBase extends HTMLElement {
   }
 
   _bar(c) {
-    const pct = c.left === null ? 0 : Math.max(0, Math.min(100, (100 * c.left) / (BAR_DAYS * DAY)));
+    const full = (c.type === "domain" ? DOMAIN_BAR_DAYS : BAR_DAYS) * DAY;
+    const pct = c.left === null ? 0 : Math.max(0, Math.min(100, (100 * c.left) / full));
     return `<div class="bar ${c.cls}"><div style="width:${pct.toFixed(1)}%"></div></div>`;
   }
 
@@ -1592,10 +1690,11 @@ class CertificateCard extends CertificateBase {
   // Rows of about 50 px: header, counters, certificates, then the DNS title and, when open, its rows.
   getCardSize() {
     if (!this._hass || !this._config) return 3;
-    const { certs, dns } = this._model();
+    const { certs, domains, dns } = this._model();
     const c = this._config;
     const listed = c.only_problems ? certs.filter(problem).length || 1 : certs.length;
-    return 1 + (c.show_counts !== false ? 1 : 0) + listed + (dns.length ? 1 + (this._isOpen("dns") ? dns.length : 0) : 0);
+    const doms = c.only_problems ? domains.filter(problem).length : domains.length;
+    return 1 + (c.show_counts !== false ? 1 : 0) + listed + (doms ? 1 + doms : 0) + (dns.length ? 1 + (this._isOpen("dns") ? dns.length : 0) : 0);
   }
 
   getGridOptions() {
@@ -1603,16 +1702,17 @@ class CertificateCard extends CertificateBase {
   }
 
   _render() {
-    const { certs, dns, at } = this._model();
-    if (!certs.length && !dns.length) return this._error("no_certs");
+    const { certs, domains, all, dns, at } = this._model();
+    if (!all.length && !dns.length) return this._error("no_certs");
     const c = this._config;
     const parts = [];
-    if (c.show_counts !== false && certs.length) parts.push(this._counts(certs));
+    if (c.show_counts !== false && all.length) parts.push(this._counts(all));
     if (certs.length) parts.push(this._certList(certs, at));
+    if (domains.length) parts.push(this._domainSection(domains, at));
     if (dns.length) parts.push(this._dnsSection(dns));
     return `<style>${BASE_STYLE}${FULL_STYLE}${MOTION_STYLE}</style>
       <ha-card>
-        ${this._header(certs, dns, at)}
+        ${this._header(all, dns, at)}
         <div class="content">${parts.join("")}</div>
       </ha-card>`;
   }
@@ -1627,32 +1727,49 @@ class CertificateCard extends CertificateBase {
     return `<div class="counts">${tile("ok", ICONS.lock, valid, "valid")}${tile(soonCls, ICONS.sand, soon.length, "expiring")}${tile("crit", ICONS.lockAlert, gone, "expired")}</div>`;
   }
 
-  _certList(certs, at) {
+  // One certificate or domain name row: its expiry (or error), a bar and the days left. A domain name adds its
+  // registrar.
+  _expiryRow(x, at) {
     const c = this._config;
-    const shown = c.only_problems ? certs.filter(problem) : certs;
     const loc = this._loc();
-    const tz = this._hass.config?.time_zone;
-    const rows = shown.map((x) => {
-      let detail = "";
-      let err = false;
-      if (x.kind === "invalid" && x.error) {
-        detail = x.error;
-        err = true;
-      } else if (x.expiry !== null && c.show_date !== false) {
-        detail = this._t(x.left > 0 ? "expires_on" : "expired_on", { date: fmtDate(x.expiry, loc, tz) });
-      } else if (x.expiry !== null) {
-        detail = fmtWhen(x.expiry - at, loc);
-      } else {
-        detail = this._t(`state_${x.kind}`);
-      }
-      const icon = x.cls === "crit" ? ICONS.lockAlert : x.cls === "warn" ? ICONS.sand : ICONS.lock;
-      return `<div class="item cert clickable ${x.cls}" role="button" tabindex="0" data-key="${esc(x.entity)}" data-entity="${esc(x.entity)}" aria-label="${esc(`${x.name}: ${detail}`)}">
+    let detail = "";
+    let err = false;
+    if (x.kind === "invalid" && x.error) {
+      detail = x.error;
+      err = true;
+    } else if (x.expiry !== null && c.show_date !== false) {
+      detail = this._t(x.left > 0 ? "expires_on" : "expired_on", { date: fmtDate(x.expiry, loc, this._hass.config?.time_zone) });
+    } else if (x.expiry !== null) {
+      detail = fmtWhen(x.expiry - at, loc);
+    } else {
+      detail = this._t(`state_${x.kind}`);
+    }
+    if (x.registrar) detail += ` · ${x.registrar}`;
+    const domain = x.type === "domain";
+    const icon = domain ? ICONS.web : x.cls === "crit" ? ICONS.lockAlert : x.cls === "warn" ? ICONS.sand : ICONS.lock;
+    return `<div class="item ${domain ? "domain" : "cert"} clickable ${x.cls}" role="button" tabindex="0" data-key="${esc(x.entity)}" data-entity="${esc(x.entity)}" aria-label="${esc(`${x.name}: ${detail}`)}">
         <div class="ico">${svgIcon(icon)}</div>
         <div class="main"><div class="title">${esc(x.name)}</div><div class="detail${err ? " err" : ""}">${esc(detail)}</div>${this._bar(x)}</div>
         ${this._badge(x)}
       </div>`;
-    });
+  }
+
+  _certList(certs, at) {
+    const shown = this._config.only_problems ? certs.filter(problem) : certs;
+    const rows = shown.map((x) => this._expiryRow(x, at));
     return `<div class="list certs">${rows.length ? rows.join("") : `<div class="empty">✓ ${esc(this._t("all_ok"))}</div>`}</div>`;
+  }
+
+  // The domain names (Whois), under their own title; with only_problems, only those expiring soon or expired, and no
+  // section when there is none.
+  _domainSection(domains, at) {
+    const shown = this._config.only_problems ? domains.filter(problem) : domains;
+    if (!shown.length) return "";
+    const ok = domains.filter((d) => d.cls === "ok").length;
+    return `<div>
+      <div class="section-title">${svgIcon(ICONS.web)}${esc(this._t("domains"))}<span class="count">${ok}/${domains.length}</span></div>
+      <div class="list domains">${shown.map((x) => this._expiryRow(x, at)).join("")}</div>
+    </div>`;
   }
 
   _dnsSection(dns) {
@@ -1754,19 +1871,19 @@ class CertificateMiniCard extends CertificateCard {
 
   _render() {
     if (this._zoomed) return super._render();
-    const { certs, dns, at } = this._model();
-    if (!certs.length && !dns.length) return this._error("no_certs");
-    const rows = certs.slice(0, this._max()).map(
+    const { certs, domains, all, dns, at } = this._model();
+    if (!all.length && !dns.length) return this._error("no_certs");
+    // Certificates and domain names together, the soonest to expire first; a domain name has a globe instead of a dot.
+    const rows = all.slice(0, this._max()).map(
       (x) => `<div class="row clickable ${x.cls}" role="button" tabindex="0" data-key="${esc(x.entity)}" data-entity="${esc(x.entity)}" aria-label="${esc(x.name)}">
-        <span class="lbl"><span class="dot"></span><span>${esc(x.name)}</span></span>${this._bar(x)}${this._badge(x)}
+        <span class="lbl">${x.type === "domain" ? svgIcon(ICONS.web, "web") : '<span class="dot"></span>'}<span>${esc(x.name)}</span></span>${this._bar(x)}${this._badge(x)}
       </div>`
     );
     const foot = [];
-    if (certs.length) {
-      const bad = certs.filter(problem).length;
-      foot.push(`<span title="${esc(this._t("certificates"))}">${svgIcon(ICONS.lock)}${certs.length}</span>`);
-      if (bad) foot.push(`<span class="${certs.some((x) => x.cls === "crit") ? "crit" : "warn"}" title="${esc(this._t("expiring"))}">${svgIcon(ICONS.alert)}${bad}</span>`);
-    }
+    if (certs.length) foot.push(`<span title="${esc(this._t("certificates"))}">${svgIcon(ICONS.lock)}${certs.length}</span>`);
+    if (domains.length) foot.push(`<span title="${esc(this._t("domains"))}">${svgIcon(ICONS.web)}${domains.length}</span>`);
+    const bad = all.filter(problem).length;
+    if (bad) foot.push(`<span class="${all.some((x) => x.cls === "crit") ? "crit" : "warn"}" title="${esc(this._t("expiring"))}">${svgIcon(ICONS.alert)}${bad}</span>`);
     if (dns.length) {
       const ok = dns.filter((d) => d.cls === "ok").length;
       const bad = dns.find((d) => d.cls === "crit");
@@ -1774,11 +1891,11 @@ class CertificateMiniCard extends CertificateCard {
         `<span class="clickable ${bad ? "crit" : ""}" role="button" tabindex="0" data-key="dns" data-entity="${esc((bad ?? dns[0]).entity)}" title="${esc(this._t("dns"))}">${svgIcon(ICONS.dns)}${ok}/${dns.length}</span>`
       );
     }
-    const more = certs.length - rows.length;
+    const more = all.length - rows.length;
     if (more > 0) foot.push(`<span class="more">${esc(this._t("more", { n: more }))}</span>`);
     return `<style>${BASE_STYLE}${MINI_STYLE}${MOTION_STYLE}</style>
       <ha-card>
-        ${this._header(certs, dns, at)}
+        ${this._header(all, dns, at)}
         <div class="content">
           ${rows.join("")}
           ${foot.length ? `<div class="foot">${foot.join("")}</div>` : ""}
@@ -1793,6 +1910,7 @@ class CertificateMiniCard extends CertificateCard {
 
 const CERT_FILTER = [{ integration: "cert_expiry" }, { domain: "sensor", device_class: "timestamp" }];
 const DNS_FILTER = [{ integration: "dnsip" }, { domain: "binary_sensor" }];
+const DOMAIN_FILTER = [{ integration: "whois" }];
 
 class CertificateEditorBase extends HTMLElement {
   // [name, default]
@@ -1820,7 +1938,8 @@ class CertificateEditorBase extends HTMLElement {
     return [
       { name: "title", selector: { text: {} } },
       { name: "entities", selector: { entity: { multiple: true, filter: CERT_FILTER } } },
-      { name: "exclude", selector: { entity: { multiple: true, filter: CERT_FILTER } } },
+      { name: "exclude", selector: { entity: { multiple: true, filter: [...CERT_FILTER, ...DOMAIN_FILTER] } } },
+      { name: "domain_entities", selector: { entity: { multiple: true, filter: DOMAIN_FILTER } } },
       { type: "grid", name: "", schema: this.constructor.toggles.map(([name]) => ({ name, selector: { boolean: {} } })) },
       {
         type: "grid",
@@ -1849,7 +1968,7 @@ class CertificateEditorBase extends HTMLElement {
         ev.stopPropagation();
         const config = { ...ev.detail.value };
         // A row renamed in YAML ({ entity, name }) keeps its name while it stays selected.
-        for (const key of ["entities", "dns_entities"]) {
+        for (const key of ["entities", "domain_entities", "dns_entities"]) {
           if (!Array.isArray(config[key])) continue;
           const named = new Map(items(this._config[key]).filter((i) => i.name).map((i) => [i.entity, i]));
           config[key] = config[key].map((id) => named.get(id) ?? id);
@@ -1864,7 +1983,7 @@ class CertificateEditorBase extends HTMLElement {
       this.appendChild(this._form);
     }
     const data = { ...defaults, ...this._config };
-    for (const key of ["entities", "dns_entities"]) if (Array.isArray(data[key])) data[key] = items(data[key]).map((i) => i.entity);
+    for (const key of ["entities", "domain_entities", "dns_entities"]) if (Array.isArray(data[key])) data[key] = items(data[key]).map((i) => i.entity);
     this._form.hass = this._hass;
     // hass is pushed on every state change while the editor is open: reassign data and schema only when they changed.
     const dataKey = JSON.stringify(data);
@@ -1888,6 +2007,7 @@ class CertificateCardEditor extends CertificateEditorBase {
       ["show_counts", true],
       ["show_date", true],
       ["only_problems", false],
+      ["show_domains", true],
       ["show_dns", true],
       ["expand_dns", false],
     ];
@@ -1899,6 +2019,7 @@ class CertificateMiniCardEditor extends CertificateEditorBase {
     return [
       ["show_title", true],
       ["show_subtitle", true],
+      ["show_domains", true],
       ["show_dns", true],
       ["zoom", true],
     ];
@@ -1926,7 +2047,7 @@ for (const card of [
   {
     type: "certificate-card",
     name: "Certificate Card",
-    description: "SSL/TLS certificates monitored by Certificate Expiry: days left, expiry dates and basic DNS checks.",
+    description: "SSL/TLS certificates (Certificate Expiry) and domain names (Whois): days left, expiry dates and basic DNS checks.",
   },
   {
     type: "certificate-mini-card",

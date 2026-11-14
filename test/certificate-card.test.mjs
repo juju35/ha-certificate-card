@@ -3,9 +3,9 @@ import { test } from "node:test";
 import { devices, entities, NOW, states } from "../scripts/mock-states.mjs";
 import { load } from "./load.mjs";
 
-const { findCerts, findDns, certInfo, dnsInfo, sortCerts, summary, nameOf, thresholds, fmtLeft, fmtWhen, CertificateCard, CertificateMiniCard } = load(
+const { findCerts, findDomains, findDns, certInfo, dnsInfo, sortCerts, summary, nameOf, thresholds, fmtLeft, fmtWhen, CertificateCard, CertificateMiniCard } = load(
   "certificate-card.js",
-  ["findCerts", "findDns", "certInfo", "dnsInfo", "sortCerts", "summary", "nameOf", "thresholds", "fmtLeft", "fmtWhen", "CertificateCard", "CertificateMiniCard"]
+  ["findCerts", "findDomains", "findDns", "certInfo", "dnsInfo", "sortCerts", "summary", "nameOf", "thresholds", "fmtLeft", "fmtWhen", "CertificateCard", "CertificateMiniCard"]
 );
 
 const DAY = 864e5;
@@ -84,6 +84,38 @@ test("sort: soonest expiry first, certificates without a date last", () => {
   same(withGone.map((c) => c.name), ["a", "b"]);
 });
 
+test("domains: every Whois days-until-expiration sensor, its exact date and registrar, exclude and show_domains", () => {
+  const h = hass();
+  const ids = findDomains(h).map((i) => i.entity);
+  same(ids, ["sensor.example_net_jours_avant_expiration", "sensor.example_org_jours_avant_expiration"]);
+  const net = certInfo(h, {}, findDomains(h)[0], NOW);
+  same([net.name, net.type, net.kind, net.cls, net.registrar], ["example.net", "domain", "expiring", "warn", "Registrar Corp"]);
+  // The date without a time zone is read as UTC, to the second (not the floored days of the state).
+  assert.equal(net.expiry, NOW + Math.round(25.6 * DAY / 1000) * 1000);
+  assert.equal(findDomains(h, { exclude: [ids[0]] }).length, 1);
+  same(findDomains(h, { show_domains: false }), []);
+  same(findDomains(h, { domain_entities: ["sensor.d"] }), [{ entity: "sensor.d", type: "domain" }]);
+  // Without a translation key in the registry: the Whois sensor in days.
+  const bare = { ...h, entities: Object.fromEntries(Object.entries(entities).map(([k, v]) => [k, { ...v, translation_key: undefined }])) };
+  assert.equal(findDomains(bare).length, 2);
+});
+
+test("domains: own section on the full card, in the counters and the header, mixed in the mini card", () => {
+  const { html } = render(CertificateCard);
+  assert.match(html, /Domain names<span class="count">1\/2<\/span>/);
+  assert.match(html, /class="item domain[^"]*"[^>]*data-entity="sensor\.example_net_jours_avant_expiration"/);
+  assert.match(html, /Expires on Dec 8, 2026 · Registrar Corp/);
+  assert.match(html, /class="count-tile ok"[\s\S]*?<span class="v">3<\/span>/);
+  const p = render(CertificateCard, { only_problems: true }).html;
+  assert.match(p, /example\.net/);
+  assert.doesNotMatch(p, /class="title">example\.org</);
+  assert.doesNotMatch(render(CertificateCard, { show_domains: false }).html, /Domain names/);
+  const mini = render(CertificateMiniCard, { max_items: 8 }).html;
+  assert.equal([...mini.matchAll(/class="icon web"/g)].length, 2);
+  const only = render(CertificateCard, { entities: ["sensor.none"], show_dns: false }, { ...hass(), states: Object.fromEntries(Object.entries(states).filter(([k]) => k.includes("jours"))) }).html;
+  assert.match(only, /Next expiry in 25 days/);
+});
+
 test("DNS: resolved with its address, not resolved, Ping reachable or not", () => {
   const h = hass();
   const [home, legacy] = findDns(h).map((i) => dnsInfo(h, i));
@@ -159,7 +191,7 @@ test("full card: translated, and dates in the language", () => {
 test("mini card: the most urgent certificates, counters and a detail button", () => {
   const { card, html } = render(CertificateMiniCard);
   assert.equal([...html.matchAll(/class="row clickable/g)].length, 3);
-  assert.match(html, /\+3 more/);
+  assert.match(html, /\+5 more/);
   assert.match(html, /class="zoom"/);
   assert.match(html, /2\/3/);
   assert.doesNotMatch(render(CertificateMiniCard, { zoom: false }).html, /class="zoom"/);

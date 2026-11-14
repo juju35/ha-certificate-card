@@ -10,15 +10,16 @@
 
 <p align="center"><img src="https://raw.githubusercontent.com/juju35/ha-certificate-card/main/images/logo.svg" alt="Certificate Card" width="120"></p>
 
-Lovelace cards for Home Assistant to keep an eye on your SSL/TLS certificates: which one expires next, how many days are left, which ones are already expired or invalid — plus a few basic DNS checks.
+Lovelace cards for Home Assistant to keep an eye on your SSL/TLS certificates and your domain names: which one expires next, how many days are left, which ones are already expired or invalid — plus a few basic DNS checks.
 
 Supported integrations:
 
 - [Certificate Expiry](https://www.home-assistant.io/integrations/cert_expiry/) — the expiry date of each monitored certificate;
+- [Whois](https://www.home-assistant.io/integrations/whois/) — the expiry date and the registrar of each domain name;
 - [DNS IP](https://www.home-assistant.io/integrations/dnsip/) — is the host name resolved, and to which address;
 - [Ping](https://www.home-assistant.io/integrations/ping/), or any connectivity binary sensor — is the host reachable.
 
-Certificates and DNS IP sensors are **discovered automatically**, you don't have to pick them one by one, and it works whatever your Home Assistant language.
+Certificates, domain names and DNS IP sensors are **discovered automatically**, you don't have to pick them one by one, and it works whatever your Home Assistant language.
 
 [![Open your Home Assistant instance and open a repository inside the Marketplace.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=juju35&repository=ha-certificate-card&category=plugin)
 
@@ -31,6 +32,7 @@ Certificates and DNS IP sensors are **discovered automatically**, you don't have
 - Two cards: a full **Certificate Card** and a compact **Certificate Mini Card**
 - Automatic discovery of every Certificate Expiry sensor; pick, rename or hide certificates if you prefer
 - Certificates sorted by expiry, soonest first, each with its expiry date, the days left as a badge and a bar (full bar: 90 days, the lifetime of a Let's Encrypt certificate)
+- Domain names watched by the Whois integration in their own section, with their expiry date, registrar, days left and a bar (full bar: one year); they count in the header status and the counters, and the mini card lists them with the certificates, the soonest first
 - Configurable thresholds: orange under 30 days, red under 7 days by default; expired and invalid certificates in red, with the error the integration reports (hostname mismatch…)
 - Valid / expiring / expired counters, and an "only certificates needing attention" mode
 - Header status: *All valid*, *Expiring soon*, *Expired*, *Invalid* or *DNS issue*, and the next expiry (*Next expiry in 4 days*)
@@ -47,14 +49,15 @@ Certificates and DNS IP sensors are **discovered automatically**, you don't have
 | Integration | What the cards show |
 |---|---|
 | [Certificate Expiry](https://www.home-assistant.io/integrations/cert_expiry/) (built in) | One row per certificate: host name, expiry date, days left, valid / expiring / expired / invalid with its error. Found automatically through the entity registry |
+| [Whois](https://www.home-assistant.io/integrations/whois/) (built in) | One row per domain name, in a *Domain names* section: expiry date, registrar, days left, valid / expiring / expired. Found automatically through the entity registry (the *Days until expiration* sensor of each domain) |
 | [DNS IP](https://www.home-assistant.io/integrations/dnsip/) (built in) | One DNS check per sensor: the resolved address, or *Not resolved*. Found automatically through the entity registry |
 | [Ping](https://www.home-assistant.io/integrations/ping/) (built in), or any connectivity binary sensor | One DNS check per entity: *Reachable* or *Unreachable*. Listed by hand with `dns_entities` (a Ping sensor often tracks a phone or a computer, not a server) |
 
-Any other timestamp sensor holding an expiry date (a domain expiry sensor, say) can be listed with `entities`, and so can a sensor holding a number of days left.
+Any other timestamp sensor holding an expiry date can be listed with `entities`, and so can a sensor holding a number of days left.
 
 ## Prerequisites
 
-Home Assistant 2024.8 or later, and the [Certificate Expiry integration](https://www.home-assistant.io/integrations/cert_expiry/) set up for each host to watch (**Settings → Devices & services → Add integration → Certificate Expiry**: host and port). The DNS checks need the [DNS IP integration](https://www.home-assistant.io/integrations/dnsip/) for each host name, or [Ping](https://www.home-assistant.io/integrations/ping/) sensors.
+Home Assistant 2024.8 or later, and the [Certificate Expiry integration](https://www.home-assistant.io/integrations/cert_expiry/) set up for each host to watch (**Settings → Devices & services → Add integration → Certificate Expiry**: host and port). The domain names need the [Whois integration](https://www.home-assistant.io/integrations/whois/), one entry per domain. The DNS checks need the [DNS IP integration](https://www.home-assistant.io/integrations/dnsip/) for each host name, or [Ping](https://www.home-assistant.io/integrations/ping/) sensors.
 
 ## Installation
 
@@ -109,6 +112,9 @@ entities:
     name: VPN
 exclude:
   - sensor.old_example_com_cert_expiry
+domain_entities:
+  - sensor.example_org_days_until_expiration
+show_domains: true
 warning_days: 30
 critical_days: 7
 show_counts: true
@@ -127,6 +133,7 @@ type: custom:certificate-mini-card
 max_items: 3
 warning_days: 30
 critical_days: 7
+show_domains: true
 show_dns: true
 zoom: true
 language: fr
@@ -140,16 +147,18 @@ language: fr
 | `show_title` | both | `true` | Show the title in the header (e.g. `false` under a section heading of your own) |
 | `show_subtitle` | both | `true` | Show the next expiry under the title |
 | `entities` | both | Every Certificate Expiry sensor | Certificates to list: entity ids, or `entity` / `name` pairs to rename a row. A timestamp sensor gives the expiry date, a numeric sensor the days left |
-| `exclude` | both | — | Certificates to hide (with automatic discovery) |
+| `exclude` | both | — | Certificates or domain names to hide (with automatic discovery) |
+| `show_domains` | both | `true` | Domain names watched by Whois (shown when there is at least one) |
+| `domain_entities` | both | Every Whois *Days until expiration* sensor | Domain names to list: entity ids, or `entity` / `name` pairs |
 | `warning_days` | both | `30` | Days left under which a certificate turns orange |
 | `critical_days` | both | `7` | Days left under which a certificate turns red |
 | `show_counts` | full | `true` | Valid / expiring / expired counters |
 | `show_date` | full | `true` | Expiry date under each certificate (`false`: *in 18 days* instead) |
-| `only_problems` | full | `false` | Only list the certificates that are expiring soon, expired or invalid |
+| `only_problems` | full | `false` | Only list the certificates and domain names that are expiring soon, expired or invalid |
 | `show_dns` | both | `true` | DNS checks (shown when there is at least one) |
 | `dns_entities` | both | Every DNS IP sensor | DNS checks to show: DNS IP sensors, Ping or other connectivity binary sensors; entity ids or `entity` / `name` pairs |
 | `expand_dns` | full | `false` | DNS checks expanded when the card loads (click the section title to fold / unfold) |
-| `max_items` | mini | `3` | Number of certificates listed, the soonest to expire first |
+| `max_items` | mini | `3` | Number of certificates and domain names listed, the soonest to expire first |
 | `zoom` | mini | `true` | Detail button at the top right: switches to the full card and back (`false` removes it) |
 | `language` | both | Auto | Force language: `en`, `fr`, `de`, `es`, `sr`, `sr-Latn`, `it`, `nl`, `pt`, `pl`, `ro`, `da`, `sv`, `bg`, `ru`, `uk`, `hu`, `sk`, `cs`, `sl`, `lv` or `el` (auto-detects from HA settings) |
 
@@ -187,7 +196,7 @@ Only certificates needing attention (`only_problems: true`, no counters, no DNS 
 
 ## How it works
 
-The cards read the Home Assistant entity registry: every sensor of the Certificate Expiry integration (platform `cert_expiry`) is a certificate, every sensor of DNS IP (platform `dnsip`) a DNS check. Entity ids can therefore be in any language or renamed without breaking the cards. A row is named after its device — a Certificate Expiry device carries the host name — unless you give it a `name`.
+The cards read the Home Assistant entity registry: every sensor of the Certificate Expiry integration (platform `cert_expiry`) is a certificate, every *Days until expiration* sensor of Whois (platform `whois`) a domain name, every sensor of DNS IP (platform `dnsip`) a DNS check. Entity ids can therefore be in any language or renamed without breaking the cards. A row is named after its device — a Certificate Expiry device carries the host name — unless you give it a `name`.
 
 A certificate's state is its expiry date. The days left are counted from now and checked every minute:
 

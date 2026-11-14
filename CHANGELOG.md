@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0 - 2026-11-14
+
+### Features
+- **Domain names (Whois)** ([#7](https://github.com/juju35/ha-certificate-card/issues/7)): the domain names watched by the Whois integration are found automatically and listed in their own *Domain names* section, with their expiry date, registrar, days left and a bar (full bar: one year), coloured against the same thresholds as the certificates. They count in the header status, the next expiry and the counters; the mini card lists them with the certificates, the soonest first, marked with a globe. New options `show_domains` and `domain_entities`, in the visual editor too; `exclude` and `only_problems` apply to them.
+
 ## 1.0.2 - 2026-11-13
 
 ### Fixes

@@ -8,9 +8,9 @@ export const states = {};
 export const entities = {};
 export const devices = {};
 
-const entity = (entity_id, platform, device, state, attributes = {}) => {
+const entity = (entity_id, platform, device, state, attributes = {}, translation_key = null) => {
   devices[device] ??= { id: device, name: device, name_by_user: null };
-  entities[entity_id] = { entity_id, platform, device_id: device, translation_key: null };
+  entities[entity_id] = { entity_id, platform, device_id: device, translation_key };
   states[entity_id] = { entity_id, state: String(state), attributes };
 };
 
@@ -41,5 +41,22 @@ for (const h of ["home.example.org", "vpn.example.net", "legacy.example.com"]) d
 // A Ping binary sensor (connectivity), listed with dns_entities.
 entity("binary_sensor.passerelle", "ping", "gateway", "on", { device_class: "connectivity", friendly_name: "Gateway" });
 devices.gateway.name = "Gateway";
+
+// Whois: per domain, the "days until expiration" sensor (expiry date and registrar as attributes, the date without a
+// time zone, as the integration gives it) and the expiration date sensor, which the cards do not list.
+const whois = (domain, days, registrar) => {
+  const id = domain.replace(/\W/g, "_");
+  const naive = new Date(NOW + days * DAY).toISOString().slice(0, 19);
+  entity(`sensor.${id}_jours_avant_expiration`, "whois", `whois:${domain}`, Math.floor(days), {
+    unit_of_measurement: "d",
+    friendly_name: `${domain} Jours avant expiration`,
+    expires: naive,
+    registrar,
+  }, "days_until_expiration");
+  entity(`sensor.${id}_date_d_expiration`, "whois", `whois:${domain}`, iso(days), { device_class: "timestamp" }, "expiration_date");
+  devices[`whois:${domain}`].name = domain;
+};
+whois("example.org", 210.4, "Example Registrar");
+whois("example.net", 25.6, "Registrar Corp");
 
 export const iso_in = iso;

@@ -22,8 +22,8 @@ test("I18N editor: the language list has every language, in the same order", () 
   assert.deepEqual(JSON.parse(JSON.stringify(LANGUAGES.map(([c]) => c))), CODES);
 });
 
-test("I18N script: sr is Cyrillic and sr-Latn is Latin (integration names and DNS aside)", () => {
-  const keep = /Certificate Expiry|DNS IP|DNS|\{\w+\}/g;
+test("I18N script: sr is Cyrillic and sr-Latn is Latin (integration names, Whois and DNS aside)", () => {
+  const keep = /Certificate Expiry|DNS IP|DNS|Whois|\{\w+\}/g;
   for (const [key, value] of Object.entries(STRINGS.sr)) assert.doesNotMatch(String(value).replace(keep, ""), /[A-Za-z]/, `Latin letter in sr.${key}`);
   for (const [key, value] of Object.entries(STRINGS["sr-Latn"])) assert.doesNotMatch(String(value), /[Ѐ-ӿ]/, `Cyrillic letter in sr-Latn.${key}`);
 });
