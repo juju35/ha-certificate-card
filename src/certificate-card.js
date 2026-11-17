@@ -1597,7 +1597,7 @@ const SCENE_STYLE = `
   /* The text on the wall, left of the picture: the round icon (status colour), the title, the next expiry, the status. */
   .htext { position: absolute; z-index: 1; left: 12px; top: 6px; bottom: calc(var(--g) + 4px); right: calc(min(200px, 56%) + 4px);
            display: flex; align-items: center; gap: 10px; min-width: 0; }
-  .htext .titles { flex: 1 1 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
+  .htext .titles { flex: 1 1 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; min-width: 0; }
   .htext .titles > * { max-width: 100%; }
   .banner .logo { position: relative; background: rgba(255,255,255,.62); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 22%, transparent); }
   .banner.night .logo { background: rgba(255,255,255,.12); box-shadow: inset 0 0 0 1px rgba(255,255,255,.14); }
@@ -1605,11 +1605,13 @@ const SCENE_STYLE = `
   .htext .name { font-size: 16px; font-weight: 500; }
   .htext .sub { color: #3d5670; }
   .night .htext .sub { color: rgba(255,255,255,.78); }
-  .banner .chip { line-height: 16px; margin-top: 2px; overflow: hidden; background: rgba(255,255,255,.7); color: color-mix(in srgb, var(--c) 70%, #10283f); }
-  .banner.night .chip { background: rgba(10,20,40,.45); color: color-mix(in srgb, var(--c) 55%, #fff); }
-  .banner .chip.idle { color: #3d5670; } .banner.night .chip.idle { color: rgba(255,255,255,.78); }
-  .banner .zoom { position: absolute; z-index: 2; top: 6px; right: 6px; margin: 0; width: 26px; height: 26px; color: #10283f; background: rgba(255,255,255,.6); }
-  .banner.night .zoom { color: #fff; background: rgba(10,20,40,.45); }
+  .banner .chip { line-height: 16px; overflow: hidden; background: color-mix(in srgb, var(--c) 18%, rgba(255,255,255,.78)); color: color-mix(in srgb, var(--c) 45%, #0d2a45); }
+  .banner.night .chip { background: color-mix(in srgb, var(--c) 30%, rgba(8,18,38,.55)); color: color-mix(in srgb, var(--c) 35%, #ffffff); }
+  .banner .zoom { position: absolute; z-index: 2; top: 5px; right: 5px; margin: 0; width: 24px; height: 24px; border-radius: 50%; color: #33506b;
+                  background: rgba(255,255,255,.55); box-shadow: inset 0 0 0 1px rgba(255,255,255,.7); backdrop-filter: blur(4px); }
+  .banner .zoom:hover { background: rgba(255,255,255,.75); color: #33506b; }
+  .banner.night .zoom { color: #fff; background: rgba(255,255,255,.12); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); }
+  .banner.night .zoom:hover { background: rgba(255,255,255,.22); color: #fff; }
   .banner + .content { padding-top: 12px; }
   /* Narrow card: no room for the picture beside the text, the wall and the desk stay. */
   @container (max-width: 299px) { .cc-scene { display: none; } .htext { right: 36px; } }
@@ -1623,7 +1625,7 @@ const BASE_STYLE = `
   :host { --cc-accent: #2e7d32; --cc-ok: var(--success-color, #43a047); --cc-warn: var(--warning-color, #ffa600);
           --cc-crit: var(--error-color, #db4437); --cc-idle: var(--disabled-text-color, #9e9e9e); }
   :host { display: block; }
-  ha-card { overflow: hidden; container-type: inline-size; }
+  ha-card { overflow: hidden; container: cc-card / inline-size; }
   /* A size container has no content width: this empty, zero-height grid gives the card a natural width of 300 px with
      no minimum, so it still shrinks to its track in a grid or a flex row. */
   :host::before { content: ""; display: grid; grid-template-columns: minmax(0, 300px); height: 0; }
@@ -1643,19 +1645,25 @@ const BASE_STYLE = `
   .logo { height: 40px; width: 40px; flex: none; border-radius: 50%; display: grid; place-items: center;
           color: var(--c, var(--cc-ok)); background: color-mix(in srgb, var(--c, var(--cc-ok)) 16%, transparent); }
   .logo .icon { width: 24px; height: 24px; }
-  .titles { flex: 1 1 0; min-width: 5ch; }
-  :host([hide-title]) .titles > .name, :host([hide-subtitle]) .titles > .sub { display: none; }
-  .header .chip { flex: 0 1 auto; min-width: 0; overflow: hidden; line-height: 16px; box-sizing: border-box; }
+  .titles { flex: 1 1 0; min-width: 5ch; container: cc-titles / inline-size; }
+  :host([hide-title]) .titles .name, :host([hide-subtitle]) .titles > .sub { display: none; }
+  .chip { min-width: 0; overflow: hidden; line-height: 16px; box-sizing: border-box; }
   .chip-label { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  /* With a subtitle, the chip stays on the title line. */
-  .header:has(.sub) .titles { align-self: flex-start; }
-  .header:has(.sub) .chip { align-self: flex-start; margin-top: 1px; }
+  /* The status pill sits on the title line, right after the title: the title ellipsises first (never under 4
+     characters), the pill keeps its whole label. Without room for both, the pill goes on its own line under the
+     subtitle; on a very narrow card only its dot is left (the label stays in its tooltip and for screen readers). */
+  .titles { display: flex; flex-direction: column; align-items: flex-start; }
+  .titles > * { max-width: 100%; }
+  .trow { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .trow .name { flex: 0 1 auto; min-width: 4ch; }
+  .trow .chip { flex: none; max-width: calc(100% - 4ch - 8px); }
+  @container cc-titles (max-width: 180px) { .trow { display: contents; } .trow .chip { order: 3; margin-top: 2px; max-width: 100%; } }
+  @container cc-titles (max-width: 110px) { .chip { padding: 5px; } .chip .chip-label { display: none; } }
+  @container cc-card (max-width: 200px) { .titles .chip { padding: 5px; } .titles .chip .chip-label { display: none; } }
   @container (max-width: 239px) {
     .header { gap: 6px; }
     :host(:not([mini])) .header .logo { height: 32px; width: 32px; }
     :host(:not([mini])) .header .logo .icon { width: 18px; height: 18px; }
-    .header .chip { flex: none; padding: 6px; }
-    .header .chip .chip-label { display: none; }
   }
   .name { font-size: 16px; font-weight: 500; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sub { font-size: 12px; color: var(--secondary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1897,25 +1905,25 @@ class CertificateBase extends HTMLElement {
     const label = esc(this._t(st.key));
     const sub = this._subtitle(certs, at);
     const logo = `<div class="logo ${st.cls}" aria-hidden="true">${svgIcon(ICONS.certificate)}</div>`;
-    const titles = `<div class="name">${esc(this._config.title || this._t("certificates"))}</div>
-          ${sub ? `<div class="sub">${esc(sub)}</div>` : ""}`;
+    const name = `<div class="name">${esc(this._config.title || this._t("certificates"))}</div>`;
     const chip = `<span class="chip ${st.cls}${st.entity ? " clickable" : ""}"${st.entity ? ` role="button" tabindex="0" data-entity="${esc(st.entity)}"` : ""} title="${label}" aria-label="${label}"><span class="dot"></span><span class="chip-label">${label}</span></span>`;
+    // The status pill right after the title, the subtitle under them.
+    const lines = `<div class="trow">${name}${chip}</div>${sub ? `<div class="sub">${esc(sub)}</div>` : ""}`;
     if (opt(this._config, "illustration") === false) {
       return `
       <div class="header">
         ${logo}
-        <div class="titles">${titles}</div>
-        ${chip}
+        <div class="titles">${lines}</div>
         ${this._zoomButton()}
       </div>`;
     }
-    // Illustrated header: the picture follows the overall status, the status chip goes under the title.
+    // Illustrated header: the picture follows the overall status, the status chip sits right after the title.
     const night = isNight(this._hass, this._config);
     const kind = sceneKind(st.key);
     return `
       <div class="banner st-${st.cls} sc-${kind}${night ? " night" : ""}">
         ${certSceneSvg(kind, this._uid)}<div class="ground"></div>
-        <div class="htext">${logo}<div class="titles">${titles}${chip}</div></div>
+        <div class="htext">${logo}<div class="titles">${lines}</div></div>
         ${this._zoomButton()}
       </div>`;
   }

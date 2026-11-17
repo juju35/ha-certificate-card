@@ -268,3 +268,12 @@ test("no update under a press: the click renders at once, a release without a cl
     card.disconnectedCallback();
   }
 });
+
+test("status pill: on the title line, right after the title, with and without the illustration, full and mini", () => {
+  for (const Cls of [CertificateCard, CertificateMiniCard])
+    for (const illustration of [true, false]) {
+      const { html } = render(Cls, { illustration });
+      assert.match(html, /<div class="trow"><div class="name">Certificates<\/div><span class="chip crit[^"]*"[^>]*><span class="dot"><\/span><span class="chip-label">Expired<\/span><\/span><\/div>/);
+      assert.match(html, /title="Expired" aria-label="Expired"/, "label kept for the dot-only pill");
+    }
+});
