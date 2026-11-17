@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0 - 2026-11-17
+
+### Features
+- **Illustrated header** on both cards, 90 px high: a certificate framed on the wall and a padlock on the desk (a desk strip edge to edge at the bottom), with the title, the next expiry and the status on the wall at the left. The picture follows the overall status: valid (green padlock, gold seal, sparkles), expiring soon (an hourglass on the desk, its sand running), expired or invalid (padlock open, certificate askew with a red stamp) and unknown (grey, still). The round `mdi:certificate` icon takes the status colour. Night picture when the sun is below the horizon (else with Home Assistant's dark theme); new options `illustration_theme` (`auto`, `day`, `night`) and `illustration` (`false` keeps the classic header), in the visual editor of both cards. Animations stop with *reduce motion*.
+
 ## 1.1.0 - 2026-11-14
 
 ### Features
