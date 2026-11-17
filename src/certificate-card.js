@@ -1657,7 +1657,7 @@ const BASE_STYLE = `
   .trow { display: flex; align-items: center; gap: 8px; min-width: 0; }
   .trow .name { flex: 0 1 auto; min-width: 4ch; }
   .trow .chip { flex: none; max-width: calc(100% - 4ch - 8px); }
-  @container cc-titles (max-width: 180px) { .trow { display: contents; } .trow .chip { order: 3; margin-top: 2px; max-width: 100%; } }
+  @container cc-titles (max-width: 180px) { .trow { display: contents; } .trow .name, .trow .chip { max-width: 100%; } .trow .chip { order: 3; margin-top: 2px; } }
   @container cc-titles (max-width: 110px) { .chip { padding: 5px; } .chip .chip-label { display: none; } }
   @container cc-card (max-width: 200px) { .titles .chip { padding: 5px; } .titles .chip .chip-label { display: none; } }
   @container (max-width: 239px) {
