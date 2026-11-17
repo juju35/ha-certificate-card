@@ -1498,13 +1498,13 @@ const problem = (c) => c.cls === "crit" || c.cls === "warn";
 const DEFAULTS = { illustration: true, illustration_theme: "auto" };
 const opt = (config, key) => config?.[key] ?? DEFAULTS[key];
 
-// Night picture: forced by illustration_theme, else the sun below the horizon or Home Assistant's dark mode
-// (the dark theme shows the night picture even while the sun is up; an unavailable sun leaves the dark mode alone).
+// Night picture: forced by illustration_theme, else Home Assistant's dark mode alone (a light theme keeps the day
+// picture after sunset).
 const isNight = (hass, config) => {
   const theme = opt(config, "illustration_theme");
   if (theme === "night") return true;
   if (theme === "day") return false;
-  return hass?.states?.["sun.sun"]?.state === "below_horizon" || !!hass?.themes?.darkMode;
+  return !!hass?.themes?.darkMode;
 };
 
 // A four-pointed sparkle centred on (x, y).
@@ -1881,8 +1881,8 @@ class CertificateBase extends HTMLElement {
   // What the render depends on: registries, language, the minute and the states of the listed entities.
   _signature() {
     const h = this._hass;
-    // The sun and the theme pick the day or night picture of the header.
-    const sig = [h.entities, h.devices, h.language, h.locale?.language, Math.floor(now() / 6e4), h.states?.["sun.sun"]?.state, h.themes?.darkMode];
+    // The theme picks the day or night picture of the header.
+    const sig = [h.entities, h.devices, h.language, h.locale?.language, Math.floor(now() / 6e4), h.themes?.darkMode];
     for (const i of [...findCerts(h, this._config), ...findDomains(h, this._config), ...findDns(h, this._config)]) sig.push(h.states?.[i.entity]);
     return sig;
   }
