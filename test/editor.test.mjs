@@ -16,13 +16,14 @@ test("editor: every option of the README is in the form of its card", () => {
   const full = new CertificateCardEditor();
   full._config = {};
   assert.deepEqual(names(full._schema()), [
-    "title", "entities", "exclude", "domain_entities", "show_title", "show_subtitle", "show_counts", "show_date", "only_problems", "show_domains", "show_dns", "expand_dns",
-    "warning_days", "critical_days", "dns_entities", "language",
+    "title", "entities", "exclude", "domain_entities", "illustration", "show_title", "show_subtitle", "show_counts", "show_date", "only_problems", "show_domains", "show_dns",
+    "expand_dns", "warning_days", "critical_days", "dns_entities", "illustration_theme", "language",
   ]);
   const mini = new CertificateMiniCardEditor();
   mini._config = {};
   assert.deepEqual(names(mini._schema()), [
-    "title", "entities", "exclude", "domain_entities", "show_title", "show_subtitle", "show_domains", "show_dns", "zoom", "warning_days", "critical_days", "max_items", "dns_entities", "language",
+    "title", "entities", "exclude", "domain_entities", "illustration", "show_title", "show_subtitle", "show_domains", "show_dns", "zoom", "warning_days", "critical_days", "max_items",
+    "dns_entities", "illustration_theme", "language",
   ]);
 });
 

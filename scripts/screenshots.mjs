@@ -61,10 +61,10 @@ const openCard = async (browser, s) => {
   await page.addScriptTag({ content: `window.__CERT_CARD_NOW__ = ${NOW};` });
   await page.addScriptTag({ content: cardJs });
   await page.evaluate(
-    ({ type, config, states, entities, devices, zoom }) => {
+    ({ type, config, states, entities, devices, zoom, dark }) => {
       const el = document.createElement(type);
       el.setConfig({ type: `custom:${type}`, ...config });
-      el.hass = { states, entities, devices, language: "en", locale: { language: "en" }, config: { time_zone: "UTC" }, callService: () => {} };
+      el.hass = { states, entities, devices, language: "en", locale: { language: "en" }, config: { time_zone: "UTC" }, themes: { darkMode: dark }, callService: () => {} };
       document.getElementById("root").appendChild(el);
       window.__card = el;
       // A mouse click (detail 1) on the detail button: the zoomed-in view, without a keyboard focus ring.
@@ -73,7 +73,7 @@ const openCard = async (browser, s) => {
           .querySelector(".zoom")
           .dispatchEvent(new MouseEvent("click", { bubbles: true, composed: true, detail: 1 }));
     },
-    { type: s.type, config: s.config, states: s.states ?? states, entities: s.entities ?? entities, devices: s.devices ?? devices, zoom: !!s.zoom }
+    { type: s.type, config: s.config, states: s.states ?? states, entities: s.entities ?? entities, devices: s.devices ?? devices, zoom: !!s.zoom, dark: s.theme === "dark" }
   );
   return page;
 };

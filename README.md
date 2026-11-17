@@ -37,6 +37,7 @@ Certificates, domain names and DNS IP sensors are **discovered automatically**, 
 ## Features
 
 - Two cards: a full **Certificate Card** and a compact **Certificate Mini Card**
+- Animated illustrated header on both cards: a certificate framed on the wall and a padlock on the desk, following the overall status — *valid* (green padlock, gold seal, sparkles), *expiring soon* (an hourglass running), *expired* or *invalid* (padlock open, certificate askew with a red stamp), unknown (grey); the icon takes the status colour. Night picture after sunset or with the dark theme (even while the sun is up), or forced with `illustration_theme`; `illustration: false` keeps a classic header
 - Automatic discovery of every Certificate Expiry sensor; pick, rename or hide certificates if you prefer
 - Certificates sorted by expiry, soonest first, each with its expiry date, the days left as a badge and a bar (full bar: 90 days, the lifetime of a Let's Encrypt certificate)
 - Domain names watched by the Whois integration in their own section, with their expiry date, registrar, days left and a bar (full bar: one year); they count in the header status and the counters, and the mini card lists them with the certificates, the soonest first
@@ -113,6 +114,8 @@ type: custom:certificate-mini-card
 ```yaml
 type: custom:certificate-card
 title: Certificates
+illustration: true
+illustration_theme: auto
 entities:
   - sensor.home_example_org_cert_expiry
   - entity: sensor.vpn_example_net_cert_expiry
@@ -151,6 +154,8 @@ language: fr
 | Option | Card | Default | Description |
 |---|---|---|---|
 | `title` | both | Certificates | Card title |
+| `illustration` | both | `true` | Animated illustrated header (certificate on the wall, padlock on the desk, following the status); `false` keeps a classic header |
+| `illustration_theme` | both | `auto` | Header picture: `auto` (night when `sun.sun` is below the horizon or with Home Assistant's dark theme, even while the sun is up), `day` or `night` |
 | `show_title` | both | `true` | Show the title in the header (e.g. `false` under a section heading of your own) |
 | `show_subtitle` | both | `true` | Show the next expiry under the title |
 | `entities` | both | Every Certificate Expiry sensor | Certificates to list: entity ids, or `entity` / `name` pairs to rename a row. A timestamp sensor gives the expiry date, a numeric sensor the days left |

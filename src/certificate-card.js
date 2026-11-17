@@ -83,6 +83,11 @@ const STRINGS = {
     zoom_helper: "Switches the mini card to the full card and back",
     language: "Language",
     lang_auto: "Automatic",
+    illustration: "Illustrated header",
+    illustration_theme: "Header picture",
+    theme_auto: "Automatic (sun or dark theme)",
+    theme_day: "Day",
+    theme_night: "Night",
   },
   fr: {
     certificates: "Certificats",
@@ -128,6 +133,11 @@ const STRINGS = {
     zoom_helper: "Bascule la mini-carte en carte complète, et inversement",
     language: "Langue",
     lang_auto: "Automatique",
+    illustration: "En-tête illustré",
+    illustration_theme: "Image de l'en-tête",
+    theme_auto: "Automatique (soleil ou thème sombre)",
+    theme_day: "Jour",
+    theme_night: "Nuit",
   },
   de: {
     certificates: "Zertifikate",
@@ -173,6 +183,11 @@ const STRINGS = {
     zoom_helper: "Schaltet die Mini-Karte zur vollständigen Karte um und zurück",
     language: "Sprache",
     lang_auto: "Automatisch",
+    illustration: "Illustrierte Kopfzeile",
+    illustration_theme: "Bild der Kopfzeile",
+    theme_auto: "Automatisch (Sonne oder dunkles Design)",
+    theme_day: "Tag",
+    theme_night: "Nacht",
   },
   es: {
     certificates: "Certificados",
@@ -218,6 +233,11 @@ const STRINGS = {
     zoom_helper: "Cambia la minitarjeta a la tarjeta completa y viceversa",
     language: "Idioma",
     lang_auto: "Automático",
+    illustration: "Encabezado ilustrado",
+    illustration_theme: "Imagen del encabezado",
+    theme_auto: "Automático (sol o tema oscuro)",
+    theme_day: "Día",
+    theme_night: "Noche",
   },
   sr: {
     certificates: "Сертификати",
@@ -263,6 +283,11 @@ const STRINGS = {
     zoom_helper: "Пребацује мини картицу на целу картицу и назад",
     language: "Језик",
     lang_auto: "Аутоматски",
+    illustration: "Илустровано заглавље",
+    illustration_theme: "Слика заглавља",
+    theme_auto: "Аутоматски (сунце или тамна тема)",
+    theme_day: "Дан",
+    theme_night: "Ноћ",
   },
   "sr-Latn": {
     certificates: "Sertifikati",
@@ -308,6 +333,11 @@ const STRINGS = {
     zoom_helper: "Prebacuje mini karticu na celu karticu i nazad",
     language: "Jezik",
     lang_auto: "Automatski",
+    illustration: "Ilustrovano zaglavlje",
+    illustration_theme: "Slika zaglavlja",
+    theme_auto: "Automatski (sunce ili tamna tema)",
+    theme_day: "Dan",
+    theme_night: "Noć",
   },
   it: {
     certificates: "Certificati",
@@ -353,6 +383,11 @@ const STRINGS = {
     zoom_helper: "Passa dalla mini scheda alla scheda completa e viceversa",
     language: "Lingua",
     lang_auto: "Automatica",
+    illustration: "Intestazione illustrata",
+    illustration_theme: "Immagine dell'intestazione",
+    theme_auto: "Automatico (sole o tema scuro)",
+    theme_day: "Giorno",
+    theme_night: "Notte",
   },
   nl: {
     certificates: "Certificaten",
@@ -398,6 +433,11 @@ const STRINGS = {
     zoom_helper: "Schakelt de minikaart naar de volledige kaart en terug",
     language: "Taal",
     lang_auto: "Automatisch",
+    illustration: "Geïllustreerde koptekst",
+    illustration_theme: "Afbeelding van de koptekst",
+    theme_auto: "Automatisch (zon of donker thema)",
+    theme_day: "Dag",
+    theme_night: "Nacht",
   },
   pt: {
     certificates: "Certificados",
@@ -443,6 +483,11 @@ const STRINGS = {
     zoom_helper: "Alterna o mini cartão para o cartão completo e vice-versa",
     language: "Idioma",
     lang_auto: "Automático",
+    illustration: "Cabeçalho ilustrado",
+    illustration_theme: "Imagem do cabeçalho",
+    theme_auto: "Automático (sol ou tema escuro)",
+    theme_day: "Dia",
+    theme_night: "Noite",
   },
   pl: {
     certificates: "Certyfikaty",
@@ -488,6 +533,11 @@ const STRINGS = {
     zoom_helper: "Przełącza minikartę na pełną kartę i z powrotem",
     language: "Język",
     lang_auto: "Automatycznie",
+    illustration: "Ilustrowany nagłówek",
+    illustration_theme: "Obraz nagłówka",
+    theme_auto: "Automatycznie (słońce lub ciemny motyw)",
+    theme_day: "Dzień",
+    theme_night: "Noc",
   },
   ro: {
     certificates: "Certificate",
@@ -533,6 +583,11 @@ const STRINGS = {
     zoom_helper: "Comută mini cardul la cardul complet și înapoi",
     language: "Limbă",
     lang_auto: "Automat",
+    illustration: "Antet ilustrat",
+    illustration_theme: "Imaginea antetului",
+    theme_auto: "Automat (soare sau temă întunecată)",
+    theme_day: "Zi",
+    theme_night: "Noapte",
   },
   da: {
     certificates: "Certifikater",
@@ -578,6 +633,11 @@ const STRINGS = {
     zoom_helper: "Skifter minikortet til hele kortet og tilbage",
     language: "Sprog",
     lang_auto: "Automatisk",
+    illustration: "Illustreret overskrift",
+    illustration_theme: "Overskriftens billede",
+    theme_auto: "Automatisk (sol eller mørkt tema)",
+    theme_day: "Dag",
+    theme_night: "Nat",
   },
   sv: {
     certificates: "Certifikat",
@@ -623,6 +683,11 @@ const STRINGS = {
     zoom_helper: "Växlar minikortet till hela kortet och tillbaka",
     language: "Språk",
     lang_auto: "Automatiskt",
+    illustration: "Illustrerad rubrik",
+    illustration_theme: "Rubrikens bild",
+    theme_auto: "Automatiskt (sol eller mörkt tema)",
+    theme_day: "Dag",
+    theme_night: "Natt",
   },
   bg: {
     certificates: "Сертификати",
@@ -668,6 +733,11 @@ const STRINGS = {
     zoom_helper: "Превключва мини картата към цялата карта и обратно",
     language: "Език",
     lang_auto: "Автоматично",
+    illustration: "Илюстрирана заглавка",
+    illustration_theme: "Изображение на заглавката",
+    theme_auto: "Автоматично (слънце или тъмна тема)",
+    theme_day: "Ден",
+    theme_night: "Нощ",
   },
   ru: {
     certificates: "Сертификаты",
@@ -713,6 +783,11 @@ const STRINGS = {
     zoom_helper: "Переключает мини-карточку на полную карточку и обратно",
     language: "Язык",
     lang_auto: "Автоматически",
+    illustration: "Иллюстрированный заголовок",
+    illustration_theme: "Изображение заголовка",
+    theme_auto: "Автоматически (солнце или тёмная тема)",
+    theme_day: "День",
+    theme_night: "Ночь",
   },
   uk: {
     certificates: "Сертифікати",
@@ -758,6 +833,11 @@ const STRINGS = {
     zoom_helper: "Перемикає міні-картку на повну картку і назад",
     language: "Мова",
     lang_auto: "Автоматично",
+    illustration: "Ілюстрований заголовок",
+    illustration_theme: "Зображення заголовка",
+    theme_auto: "Автоматично (сонце або темна тема)",
+    theme_day: "День",
+    theme_night: "Ніч",
   },
   hu: {
     certificates: "Tanúsítványok",
@@ -803,6 +883,11 @@ const STRINGS = {
     zoom_helper: "A minikártyát a teljes kártyára váltja és vissza",
     language: "Nyelv",
     lang_auto: "Automatikus",
+    illustration: "Illusztrált fejléc",
+    illustration_theme: "A fejléc képe",
+    theme_auto: "Automatikus (nap vagy sötét téma)",
+    theme_day: "Nappal",
+    theme_night: "Éjszaka",
   },
   sk: {
     certificates: "Certifikáty",
@@ -848,6 +933,11 @@ const STRINGS = {
     zoom_helper: "Prepína minikartu na celú kartu a späť",
     language: "Jazyk",
     lang_auto: "Automaticky",
+    illustration: "Ilustrovaná hlavička",
+    illustration_theme: "Obrázok hlavičky",
+    theme_auto: "Automaticky (slnko alebo tmavá téma)",
+    theme_day: "Deň",
+    theme_night: "Noc",
   },
   cs: {
     certificates: "Certifikáty",
@@ -893,6 +983,11 @@ const STRINGS = {
     zoom_helper: "Přepíná minikartu na celou kartu a zpět",
     language: "Jazyk",
     lang_auto: "Automaticky",
+    illustration: "Ilustrované záhlaví",
+    illustration_theme: "Obrázek záhlaví",
+    theme_auto: "Automaticky (slunce nebo tmavý motiv)",
+    theme_day: "Den",
+    theme_night: "Noc",
   },
   sl: {
     certificates: "Potrdila",
@@ -938,6 +1033,11 @@ const STRINGS = {
     zoom_helper: "Preklopi mini kartico na celotno kartico in nazaj",
     language: "Jezik",
     lang_auto: "Samodejno",
+    illustration: "Ilustrirana glava",
+    illustration_theme: "Slika glave",
+    theme_auto: "Samodejno (sonce ali temna tema)",
+    theme_day: "Dan",
+    theme_night: "Noč",
   },
   lv: {
     certificates: "Sertifikāti",
@@ -983,6 +1083,11 @@ const STRINGS = {
     zoom_helper: "Pārslēdz mini kartīti uz pilno kartīti un atpakaļ",
     language: "Valoda",
     lang_auto: "Automātiski",
+    illustration: "Ilustrēta galvene",
+    illustration_theme: "Galvenes attēls",
+    theme_auto: "Automātiski (saule vai tumšā tēma)",
+    theme_day: "Diena",
+    theme_night: "Nakts",
   },
   el: {
     certificates: "Πιστοποιητικά",
@@ -1028,6 +1133,11 @@ const STRINGS = {
     zoom_helper: "Εναλλάσσει τη μίνι κάρτα στην πλήρη κάρτα και πίσω",
     language: "Γλώσσα",
     lang_auto: "Αυτόματα",
+    illustration: "Εικονογραφημένη κεφαλίδα",
+    illustration_theme: "Εικόνα κεφαλίδας",
+    theme_auto: "Αυτόματο (ήλιος ή σκούρο θέμα)",
+    theme_day: "Ημέρα",
+    theme_night: "Νύχτα",
   },
 };
 
@@ -1059,6 +1169,13 @@ const LANGUAGES = [
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+
+// The width of an element's whole text in fractional pixels, even while an ellipsis cuts it.
+const textWidth = (el) => {
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  return range.getBoundingClientRect().width || el.scrollWidth;
+};
 
 const esc = (v) =>
   String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -1368,6 +1485,145 @@ const summary = (certs, dns) => {
 const problem = (c) => c.cls === "crit" || c.cls === "warn";
 
 // ---------------------------------------------------------------------------
+// Illustrated header: a certificate framed on the wall and a padlock on the desk, at the right of a 90 px banner
+// (a 200 × 80 picture above a 10 px desk strip, edge to edge). The left of the banner is plain wall: the icon, the
+// title and the status sit there. The picture follows the overall status (the padlock and the icon take its colour:
+// green, amber, red or grey):
+// - valid: gold seal, sparkles;
+// - expiring (expiring soon, DNS issue): an hourglass on the desk, its sand running;
+// - expired (expired, invalid): the padlock open, the certificate askew with a red stamp on it;
+// - idle (unknown, unavailable): grey padlock and seal, nothing moves.
+// ---------------------------------------------------------------------------
+
+const DEFAULTS = { illustration: true, illustration_theme: "auto" };
+const opt = (config, key) => config?.[key] ?? DEFAULTS[key];
+
+// Night picture: forced by illustration_theme, else the sun below the horizon or Home Assistant's dark mode
+// (the dark theme shows the night picture even while the sun is up; an unavailable sun leaves the dark mode alone).
+const isNight = (hass, config) => {
+  const theme = opt(config, "illustration_theme");
+  if (theme === "night") return true;
+  if (theme === "day") return false;
+  return hass?.states?.["sun.sun"]?.state === "below_horizon" || !!hass?.themes?.darkMode;
+};
+
+// A four-pointed sparkle centred on (x, y).
+const sparkle = (x, y, r, cls) =>
+  `<path class="cc-spark ${cls}" d="M${x} ${y - r}L${x + r * 0.28} ${y - r * 0.28}L${x + r} ${y}L${x + r * 0.28} ${y + r * 0.28}L${x} ${y + r}L${x - r * 0.28} ${y + r * 0.28}L${x - r} ${y}L${x - r * 0.28} ${y - r * 0.28}Z"/>`;
+
+// The hourglass standing on the desk (expiring soon): sand running from the top bulb to the bottom one.
+const hourglass = (uid) => `<g class="cc-hourglass" transform="translate(183 80) scale(1.3)">
+    <clipPath id="cc-top-${uid}"><path d="M-5 -21H5L0.6 -12.2H-0.6Z"/></clipPath>
+    <clipPath id="cc-bot-${uid}"><path d="M-0.6 -11.8H0.6L5 -3H-5Z"/></clipPath>
+    <path class="cc-glass" d="M-5.4 -21.6H5.4L0.8 -12L5.4 -2.4H-5.4L-0.8 -12Z"/>
+    <g clip-path="url(#cc-top-${uid})"><rect class="cc-sand cc-sand-top" x="-6" y="-21" width="12" height="9"/></g>
+    <g clip-path="url(#cc-bot-${uid})"><rect class="cc-sand cc-sand-bot" x="-6" y="-12" width="12" height="9"/></g>
+    <path class="cc-stream" d="M0 -12.4V-3.4"/>
+    <rect class="cc-wood" x="-7" y="-24" width="14" height="2.4" rx=".8"/><rect class="cc-wood" x="-7" y="-2.4" width="14" height="2.4" rx=".8"/>
+    <path class="cc-post" d="M-6 -21.6V-2.4M6 -21.6V-2.4"/>
+  </g>`;
+
+// The picture shown for a status key of summary().
+const sceneKind = (key) =>
+  ({ all_valid: "valid", all_ok: "valid", expiring: "expiring", dns_issue: "expiring", expired: "expired", invalid: "expired" })[key] ?? "idle";
+
+// The whole picture; `uid` keeps each card's clip paths apart on a page with several cards.
+const certSceneSvg = (kind, uid) => {
+  const crit = kind === "expired";
+  // Open padlock: the shackle lifted and swung out on its right leg.
+  const shackle = crit
+    ? `<g class="cc-open"><path class="cc-shackle" d="M-7 -18V-25a7 7 0 0 1 14 0V-18" transform="translate(0 -6) rotate(-28 7 -18)"/></g>`
+    : `<path class="cc-shackle" d="M-7 -18V-25a7 7 0 0 1 14 0V-18"/>`;
+  const stamp = crit
+    ? `<g class="cc-stamp" transform="translate(24 21) rotate(-14)"><circle r="9"/><path d="M-4 -4L4 4M4 -4L-4 4"/></g>`
+    : "";
+  return `<svg class="cc-scene" viewBox="0 0 200 80" preserveAspectRatio="xMaxYMax meet" aria-hidden="true" focusable="false">
+    <path class="cc-wire" d="M138 3L113 12M138 3L163 12"/><circle class="cc-nail" cx="138" cy="3" r="1.4"/>
+    <g class="cc-frame"><g transform="translate(110 10)">
+      <rect class="cc-wood" width="56" height="40" rx="1.5"/><rect class="cc-paper" x="3" y="3" width="50" height="34"/>
+      <path class="cc-head" d="M16 10H40"/><path class="cc-lines" d="M12 17H44M12 23H38M12 29H30"/>
+      <g transform="translate(42 30)"><path class="cc-ribbon" d="M-3 2l-2 8 5-3 5 3-2-8"/><circle class="cc-seal" r="6"/><circle class="cc-seal-ring" r="3.6"/></g>
+      ${stamp}
+    </g></g>
+    <g class="cc-lock" transform="translate(70 80)">
+      ${shackle}
+      <rect class="cc-body" x="-12" y="-18" width="24" height="18" rx="3"/><rect class="cc-shine" x="-9.5" y="-16" width="3" height="13" rx="1.5"/>
+      <circle class="cc-hole" cy="-10.5" r="2.4"/><rect class="cc-hole" x="-1" y="-10" width="2" height="5" rx="1"/>
+    </g>
+    ${kind === "valid" ? `${sparkle(180, 30, 6, "s1")}${sparkle(193, 16, 3.4, "s2")}${sparkle(100, 16, 3, "s3")}` : ""}
+    ${kind === "expiring" ? hourglass(uid) : ""}
+  </svg>`;
+};
+
+// The banner: wall colour, desk strip, the picture's colours and animations, day and night.
+const SCENE_STYLE = `
+  .banner { position: relative; overflow: hidden; height: 90px; --g: 10px; color: #10283f; background: #eef1f6;
+            --lock: #43a047; --seal: #f5b400; }
+  .banner.night { color: #fff; background: #262c3a; }
+  .banner.st-warn { --lock: #f5a623; } .banner.st-crit { --lock: #e5484d; } .banner.st-idle { --lock: #9aa3ae; --seal: #b7bec7; }
+  .banner.sc-expired { --seal: #b7bec7; }
+  .night.st-idle { --lock: #6f7887; --seal: #6f7887; } .night.sc-expired { --seal: #6f7887; }
+  /* The desk: a 10 px strip under the whole banner, edge to edge. */
+  .ground { position: absolute; left: 0; right: 0; bottom: 0; height: var(--g); background: #b98a5c; box-shadow: inset 0 2px 0 #d4a878; }
+  .night .ground { background: #4a3a2c; box-shadow: inset 0 2px 0 #5c4836; }
+  .cc-scene { position: absolute; right: 0; bottom: var(--g); height: calc(100% - var(--g)); width: min(200px, 56%); overflow: visible; }
+  .cc-wood { fill: #b0855a; } .night .cc-wood { fill: #8a6646; }
+  .cc-paper { fill: #fffdf5; } .night .cc-paper { fill: #3a4050; }
+  .cc-head { stroke: #8e97a3; stroke-width: 2; stroke-linecap: round; } .night .cc-head { stroke: #7d879a; }
+  .cc-lines { stroke: #c9ced6; stroke-width: 1.6; stroke-linecap: round; fill: none; } .night .cc-lines { stroke: #5c6578; }
+  .cc-wire { stroke: #8e97a3; stroke-width: .6; fill: none; } .night .cc-wire { stroke: #5c6578; }
+  .cc-nail { fill: #6b7380; } .night .cc-nail { fill: #8e97a3; }
+  .cc-ribbon { fill: #e5484d; } .sc-expired .cc-ribbon, .sc-idle .cc-ribbon { fill: #9aa3ae; }
+  .night.sc-expired .cc-ribbon, .night.sc-idle .cc-ribbon { fill: #5c6578; }
+  .cc-seal { fill: var(--seal); } .cc-seal-ring { fill: none; stroke: #fff; stroke-width: .8; }
+  .cc-body { fill: var(--lock); } .cc-shackle { fill: none; stroke: var(--lock); stroke-width: 3; }
+  .cc-shine { fill: #fff; opacity: .22; } .cc-hole { fill: #fff; } .night .cc-hole { fill: #f1f3f6; }
+  .cc-spark { fill: #f5b400; transform-box: fill-box; transform-origin: center; animation: cc-twinkle 2.4s ease-in-out infinite; }
+  .cc-spark.s2 { animation-delay: -.8s; } .cc-spark.s3 { animation-delay: -1.6s; }
+  .night .cc-spark { fill: #ffd54f; }
+  /* Expiring soon: the hourglass's sand runs down, again and again. */
+  .cc-glass { fill: rgba(255,255,255,.55); stroke: #8e97a3; stroke-width: .6; } .night .cc-glass { fill: rgba(255,255,255,.08); stroke: #7d879a; }
+  .cc-post { stroke: #8a6646; stroke-width: 1; } .cc-sand { fill: #f5a623; }
+  .cc-sand-top { transform-box: fill-box; transform-origin: 50% 100%; animation: cc-empty 4s linear infinite; }
+  .cc-sand-bot { transform-box: fill-box; transform-origin: 50% 100%; animation: cc-fill 4s linear infinite; }
+  .cc-stream { stroke: #f5a623; stroke-width: .8; stroke-dasharray: 1.4 1.2; animation: cc-run .5s linear infinite; }
+  /* Expired: the certificate hangs askew, its red stamp pulsing; the open shackle wobbles. */
+  .cc-frame { transform-box: view-box; transform-origin: 138px 3px; }
+  .sc-expired .cc-frame { transform: rotate(6deg); }
+  .cc-stamp circle { fill: rgba(229,72,77,.12); stroke: #e5484d; stroke-width: 1.6; }
+  .cc-stamp path { stroke: #e5484d; stroke-width: 2; stroke-linecap: round; }
+  .cc-stamp { animation: cc-pulse 2.4s ease-in-out infinite; }
+  .cc-open { transform-box: view-box; transform-origin: 77px 62px; animation: cc-wobble 3s ease-in-out infinite; }
+  @keyframes cc-twinkle { 0%, 100% { transform: scale(.55); opacity: .45; } 50% { transform: scale(1); opacity: 1; } }
+  @keyframes cc-empty { from { transform: scaleY(1); } to { transform: scaleY(.08); } }
+  @keyframes cc-fill { from { transform: scaleY(.08); } to { transform: scaleY(1); } }
+  @keyframes cc-run { to { stroke-dashoffset: -2.6; } }
+  @keyframes cc-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+  @keyframes cc-wobble { 0%, 70%, 100% { transform: rotate(0); } 80% { transform: rotate(-6deg); } 90% { transform: rotate(3deg); } }
+  /* The text on the wall, left of the picture: the round icon (status colour), the title, the next expiry, the status. */
+  .htext { position: absolute; z-index: 1; left: 12px; top: 6px; bottom: calc(var(--g) + 4px); right: calc(min(200px, 56%) + 4px);
+           display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .htext .titles { flex: 1 1 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; min-width: 0; }
+  .htext .titles > * { max-width: 100%; }
+  .banner .logo { position: relative; background: rgba(255,255,255,.62); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 22%, transparent); }
+  .banner.night .logo { background: rgba(255,255,255,.12); box-shadow: inset 0 0 0 1px rgba(255,255,255,.14); }
+  .banner.night .logo.idle { color: #9aa3ae; }
+  .htext .name { font-size: 16px; font-weight: 500; }
+  .htext .sub { color: #3d5670; }
+  .night .htext .sub { color: rgba(255,255,255,.78); }
+  .banner .chip { line-height: 16px; overflow: hidden; background: color-mix(in srgb, var(--c) 18%, rgba(255,255,255,.78)); color: color-mix(in srgb, var(--c) 45%, #0d2a45); }
+  .banner.night .chip { background: color-mix(in srgb, var(--c) 30%, rgba(8,18,38,.55)); color: color-mix(in srgb, var(--c) 35%, #ffffff); }
+  .banner .zoom { position: absolute; z-index: 2; top: 5px; right: 5px; margin: 0; width: 24px; height: 24px; border-radius: 50%; color: #33506b;
+                  background: rgba(255,255,255,.55); box-shadow: inset 0 0 0 1px rgba(255,255,255,.7); backdrop-filter: blur(4px); }
+  .banner .zoom:hover { background: rgba(255,255,255,.75); color: #33506b; }
+  .banner.night .zoom { color: #fff; background: rgba(255,255,255,.12); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); }
+  .banner.night .zoom:hover { background: rgba(255,255,255,.22); color: #fff; }
+  .banner + .content { padding-top: 12px; }
+  /* Narrow card: no room for the picture beside the text, the wall and the desk stay. */
+  @container (max-width: 299px) { .cc-scene { display: none; } .htext { right: 36px; } }
+`;
+
+// ---------------------------------------------------------------------------
 // Styles
 // ---------------------------------------------------------------------------
 
@@ -1375,7 +1631,7 @@ const BASE_STYLE = `
   :host { --cc-accent: #2e7d32; --cc-ok: var(--success-color, #43a047); --cc-warn: var(--warning-color, #ffa600);
           --cc-crit: var(--error-color, #db4437); --cc-idle: var(--disabled-text-color, #9e9e9e); }
   :host { display: block; }
-  ha-card { overflow: hidden; container-type: inline-size; }
+  ha-card { overflow: hidden; container: cc-card / inline-size; }
   /* A size container has no content width: this empty, zero-height grid gives the card a natural width of 300 px with
      no minimum, so it still shrinks to its track in a grid or a flex row. */
   :host::before { content: ""; display: grid; grid-template-columns: minmax(0, 300px); height: 0; }
@@ -1396,18 +1652,31 @@ const BASE_STYLE = `
           color: var(--c, var(--cc-ok)); background: color-mix(in srgb, var(--c, var(--cc-ok)) 16%, transparent); }
   .logo .icon { width: 24px; height: 24px; }
   .titles { flex: 1 1 0; min-width: 5ch; }
-  :host([hide-title]) .titles > .name, :host([hide-subtitle]) .titles > .sub { display: none; }
-  .header .chip { flex: 0 1 auto; min-width: 0; overflow: hidden; line-height: 16px; box-sizing: border-box; }
+  :host([hide-title]) .titles .name, :host([hide-subtitle]) .titles > .sub { display: none; }
+  .chip { min-width: 0; overflow: hidden; line-height: 16px; box-sizing: border-box; }
   .chip-label { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  /* With a subtitle, the chip stays on the title line. */
-  .header:has(.sub) .titles { align-self: flex-start; }
-  .header:has(.sub) .chip { align-self: flex-start; margin-top: 1px; }
+  .titles { display: flex; flex-direction: column; align-items: flex-start; }
+  .titles > * { max-width: 100%; }
+  /* The status pill right after the title, its whole label on one line, while the title stays whole beside it
+     (measured by the card, see _fitPill); otherwise on its own line under a one-line subtitle, and with its dot alone
+     when even that does not fit the header. */
+  .trow { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .trow > .name { flex: 0 1 auto; min-width: 0; }
+  .trow > .chip { flex: none; max-width: none; }
+  .trow > .chip .chip-label { white-space: nowrap; overflow: visible; }
+  .titles.below { display: grid; grid-template-columns: minmax(0, 1fr); align-content: center; }
+  .titles.below > .trow { display: contents; }
+  .titles.below > .trow > .chip { order: 3; justify-self: start; align-self: start; margin-top: 3px; }
+  .titles.below > .sub { order: 2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .titles.dot-only > .trow { display: flex; }
+  .titles.dot-only > .trow > .chip { order: 0; margin-top: 0; align-self: center; padding: 5px; }
+  .titles.dot-only > .trow > .chip .chip-label { display: none; }
+  /* On a very narrow card only its dot is left (the label stays in its tooltip and for screen readers). */
+  @container cc-card (max-width: 200px) { .titles .chip { padding: 5px; } .titles .chip .chip-label { display: none; } }
   @container (max-width: 239px) {
     .header { gap: 6px; }
     :host(:not([mini])) .header .logo { height: 32px; width: 32px; }
     :host(:not([mini])) .header .logo .icon { width: 18px; height: 18px; }
-    .header .chip { flex: none; padding: 6px; }
-    .header .chip .chip-label { display: none; }
   }
   .name { font-size: 16px; font-weight: 500; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sub { font-size: 12px; color: var(--secondary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1485,9 +1754,13 @@ const MINI_STYLE = `
 // Cards
 // ---------------------------------------------------------------------------
 
+let certUid = 0;
+
 class CertificateBase extends HTMLElement {
   constructor() {
     super();
+    // Keeps the SVG ids of each card apart on a page with several cards.
+    this._uid = ++certUid;
     this.attachShadow({ mode: "open" });
     this._html = "";
     this.shadowRoot.addEventListener("click", (ev) => this._onClick(ev));
@@ -1542,6 +1815,18 @@ class CertificateBase extends HTMLElement {
       },
     );
     this._outside.on();
+    // A new width (or the web font loaded): the status pill is fitted again, in the next frame.
+    if (typeof ResizeObserver === "function") {
+      this._resize ??= new ResizeObserver((entries) => {
+        const w = Math.round(entries.at(-1).contentRect.width);
+        if (w === this._fitWidth) return;
+        this._fitWidth = w;
+        cancelAnimationFrame(this._fitFrame);
+        this._fitFrame = requestAnimationFrame(() => this._fitPill());
+      });
+      this._resize.observe(this);
+    }
+    document.fonts?.ready?.then(() => this._fitPill());
     // Back on the page after leaving it: rendered again in its default state.
     if (this._hass && this._config) this._update();
     // The days left move on with time: checked every minute, rendered only when a value shown changed.
@@ -1551,6 +1836,8 @@ class CertificateBase extends HTMLElement {
   }
 
   disconnectedCallback() {
+    this._resize?.disconnect();
+    this._fitWidth = null;
     this._outside?.off();
     this._pressing = false;
     window.removeEventListener("pointerup", this._onPressEnd, true);
@@ -1594,7 +1881,8 @@ class CertificateBase extends HTMLElement {
   // What the render depends on: registries, language, the minute and the states of the listed entities.
   _signature() {
     const h = this._hass;
-    const sig = [h.entities, h.devices, h.language, h.locale?.language, Math.floor(now() / 6e4)];
+    // The sun and the theme pick the day or night picture of the header.
+    const sig = [h.entities, h.devices, h.language, h.locale?.language, Math.floor(now() / 6e4), h.states?.["sun.sun"]?.state, h.themes?.darkMode];
     for (const i of [...findCerts(h, this._config), ...findDomains(h, this._config), ...findDns(h, this._config)]) sig.push(h.states?.[i.entity]);
     return sig;
   }
@@ -1612,6 +1900,53 @@ class CertificateBase extends HTMLElement {
     if (html !== this._html) {
       this._html = html;
       morph(this.shadowRoot, html);
+    }
+    this._fitPill();
+  }
+
+  // The header's status pill goes right after the title, on its row, only while the title stays whole and the
+  // pill's whole label fits beside it; otherwise it takes a line of its own under the subtitle (.below), the title
+  // whole on its row (cut only when it does not fit alone). There, in the banner, the subtitle keeps one line; if the
+  // text still does not fit above the ground strip, the pill keeps its dot alone (.dot-only, its label in its tooltip
+  // and for screen readers). Measured after each render and on each new width, whatever the language: no fixed
+  // width threshold.
+  _fitPill() {
+    if (!this.isConnected) return;
+    for (const t of this.shadowRoot?.querySelectorAll?.(".titles") || []) {
+      const row = t.querySelector(".trow");
+      const pills = row ? [...row.children].filter((n) => n.matches(".chip")) : [];
+      if (!pills.length || !pills[0].getBoundingClientRect) continue;
+      t.classList.remove("below", "dot-only");
+      const name = row.querySelector(".name");
+      const gap = parseFloat(getComputedStyle(row).columnGap) || 0;
+      const title = name && getComputedStyle(name).display !== "none" ? textWidth(name) + gap : 0;
+      const need = pills.reduce((w, p) => w + p.getBoundingClientRect().width + gap, title - gap);
+      if (need > t.getBoundingClientRect().width - 0.5) {
+        t.classList.add("below");
+        const banner = t.closest(".banner");
+        if (banner) {
+          const b = banner.getBoundingClientRect();
+          // Each element as it shows: its box cut by its ancestors that hide their overflow (a clamped line).
+          const out = [...t.querySelectorAll("*")].some((n) => {
+            let { top, bottom } = n.getBoundingClientRect();
+            for (let p = n.parentElement; p && p !== t; p = p.parentElement) {
+              if (getComputedStyle(p).overflowY === "visible") continue;
+              top = Math.max(top, p.getBoundingClientRect().top);
+              bottom = Math.min(bottom, p.getBoundingClientRect().bottom);
+            }
+            return bottom - top > 0.5 && (top < b.top - 0.5 || bottom > b.bottom - (parseFloat(getComputedStyle(banner).getPropertyValue("--g")) || 10) + 0.5);
+          });
+          if (out) t.classList.add("dot-only");
+        }
+      }
+      // A subtitle cut by its ellipsis keeps its whole text in its tooltip.
+      const s = t.querySelector(".sub");
+      if (s && (!s.hasAttribute("title") || s.dataset.fit)) {
+        const cut = s.scrollWidth > s.clientWidth + 1;
+        s.toggleAttribute("data-fit", cut);
+        if (cut) s.title = s.textContent.trim();
+        else s.removeAttribute("title");
+      }
     }
   }
 
@@ -1643,16 +1978,33 @@ class CertificateBase extends HTMLElement {
     const st = summary(certs, dns);
     const label = esc(this._t(st.key));
     const sub = this._subtitle(certs, at);
-    return `
+    const logo = `<div class="logo ${st.cls}" aria-hidden="true">${svgIcon(ICONS.certificate)}</div>`;
+    const name = `<div class="name">${esc(this._config.title || this._t("certificates"))}</div>`;
+    const chip = `<span class="chip ${st.cls}${st.entity ? " clickable" : ""}"${st.entity ? ` role="button" tabindex="0" data-entity="${esc(st.entity)}"` : ""} title="${label}" aria-label="${label}"><span class="dot"></span><span class="chip-label">${label}</span></span>`;
+    // The status pill right after the title, the subtitle under them.
+    const lines = `<div class="trow">${name}${chip}</div>${sub ? `<div class="sub">${esc(sub)}</div>` : ""}`;
+    if (opt(this._config, "illustration") === false) {
+      return `
       <div class="header">
-        <div class="logo ${st.cls}" aria-hidden="true">${svgIcon(ICONS.certificate)}</div>
-        <div class="titles">
-          <div class="name">${esc(this._config.title || this._t("certificates"))}</div>
-          ${sub ? `<div class="sub">${esc(sub)}</div>` : ""}
-        </div>
-        <span class="chip ${st.cls}${st.entity ? " clickable" : ""}"${st.entity ? ` role="button" tabindex="0" data-entity="${esc(st.entity)}"` : ""} title="${label}" aria-label="${label}"><span class="dot"></span><span class="chip-label">${label}</span></span>
+        ${logo}
+        <div class="titles">${lines}</div>
         ${this._zoomButton()}
       </div>`;
+    }
+    // Illustrated header: the picture follows the overall status, the status chip sits right after the title.
+    const night = isNight(this._hass, this._config);
+    const kind = sceneKind(st.key);
+    return `
+      <div class="banner st-${st.cls} sc-${kind}${night ? " night" : ""}">
+        ${certSceneSvg(kind, this._uid)}<div class="ground"></div>
+        <div class="htext">${logo}<div class="titles">${lines}</div></div>
+        ${this._zoomButton()}
+      </div>`;
+  }
+
+  // The illustration's styles, only when it is shown.
+  _sceneStyle() {
+    return opt(this._config, "illustration") === false ? "" : SCENE_STYLE;
   }
 
   // Button at the far right of the header: only the mini card has one.
@@ -1710,7 +2062,7 @@ class CertificateCard extends CertificateBase {
     if (certs.length) parts.push(this._certList(certs, at));
     if (domains.length) parts.push(this._domainSection(domains, at));
     if (dns.length) parts.push(this._dnsSection(dns));
-    return `<style>${BASE_STYLE}${FULL_STYLE}${MOTION_STYLE}</style>
+    return `<style>${BASE_STYLE}${FULL_STYLE}${this._sceneStyle()}${MOTION_STYLE}</style>
       <ha-card>
         ${this._header(all, dns, at)}
         <div class="content">${parts.join("")}</div>
@@ -1893,7 +2245,7 @@ class CertificateMiniCard extends CertificateCard {
     }
     const more = all.length - rows.length;
     if (more > 0) foot.push(`<span class="more">${esc(this._t("more", { n: more }))}</span>`);
-    return `<style>${BASE_STYLE}${MINI_STYLE}${MOTION_STYLE}</style>
+    return `<style>${BASE_STYLE}${MINI_STYLE}${this._sceneStyle()}${MOTION_STYLE}</style>
       <ha-card>
         ${this._header(all, dns, at)}
         <div class="content">
@@ -1951,6 +2303,10 @@ class CertificateEditorBase extends HTMLElement {
       },
       { name: "dns_entities", selector: { entity: { multiple: true, filter: DNS_FILTER } } },
       {
+        name: "illustration_theme",
+        selector: { select: { mode: "dropdown", options: ["auto", "day", "night"].map((value) => ({ value, label: tr(`theme_${value}`) })) } },
+      },
+      {
         name: "language",
         selector: { select: { mode: "dropdown", options: [{ value: "", label: tr("lang_auto") }, ...LANGUAGES.map(([value, label]) => ({ value, label }))] } },
       },
@@ -1959,7 +2315,7 @@ class CertificateEditorBase extends HTMLElement {
 
   _render() {
     if (!this._hass || !this._config) return;
-    const defaults = { ...Object.fromEntries(this.constructor.toggles), ...this.constructor.numbers };
+    const defaults = { ...Object.fromEntries(this.constructor.toggles), ...this.constructor.numbers, illustration_theme: DEFAULTS.illustration_theme };
     if (!this._form) {
       this._form = document.createElement("ha-form");
       this._form.computeLabel = (s) => t(this._hass, this._config, s.name);
@@ -2002,6 +2358,7 @@ class CertificateEditorBase extends HTMLElement {
 class CertificateCardEditor extends CertificateEditorBase {
   static get toggles() {
     return [
+      ["illustration", true],
       ["show_title", true],
       ["show_subtitle", true],
       ["show_counts", true],
@@ -2017,6 +2374,7 @@ class CertificateCardEditor extends CertificateEditorBase {
 class CertificateMiniCardEditor extends CertificateEditorBase {
   static get toggles() {
     return [
+      ["illustration", true],
       ["show_title", true],
       ["show_subtitle", true],
       ["show_domains", true],
