@@ -154,14 +154,15 @@ const render = (Cls, config = {}, h = hass()) => {
   return { card, html: card._render() };
 };
 
-test("night picture: the sun below the horizon or the dark theme, unless illustration_theme forces it", () => {
+test("night picture: the dark theme alone, unless illustration_theme forces it", () => {
   const night = (sun, dark, config = {}) => {
     const h = hass({ states: { ...states, "sun.sun": { entity_id: "sun.sun", state: sun, attributes: {} } }, themes: { darkMode: dark } });
     return /class="banner [^"]*\bnight"/.test(render(CertificateCard, config, h).html);
   };
   assert.equal(night("above_horizon", true), true, "dark theme while the sun is up: night");
   assert.equal(night("above_horizon", false), false, "light theme while the sun is up: day");
-  assert.equal(night("below_horizon", false), true);
+  assert.equal(night("below_horizon", false), false, "light theme after sunset: day");
+  assert.equal(night("below_horizon", true), true);
   assert.equal(night("unavailable", true), true);
   assert.equal(night("above_horizon", true, { illustration_theme: "day" }), false);
   assert.equal(night("above_horizon", false, { illustration_theme: "night" }), true);

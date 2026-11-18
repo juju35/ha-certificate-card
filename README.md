@@ -155,7 +155,7 @@ language: fr
 |---|---|---|---|
 | `title` | both | Certificates | Card title |
 | `illustration` | both | `true` | Animated illustrated header (certificate on the wall, padlock on the desk, following the status); `false` keeps a classic header |
-| `illustration_theme` | both | `auto` | Header picture: `auto` (night when `sun.sun` is below the horizon or with Home Assistant's dark theme, even while the sun is up), `day` or `night` |
+| `illustration_theme` | both | `auto` | Header picture: `auto` (follows the Home Assistant theme: night with a dark theme, day with a light theme), `day` or `night` |
 | `show_title` | both | `true` | Show the title in the header (e.g. `false` under a section heading of your own) |
 | `show_subtitle` | both | `true` | Show the next expiry under the title |
 | `entities` | both | Every Certificate Expiry sensor | Certificates to list: entity ids, or `entity` / `name` pairs to rename a row. A timestamp sensor gives the expiry date, a numeric sensor the days left |
