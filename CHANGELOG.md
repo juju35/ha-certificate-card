@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.3.0 - 2026-11-20
+
+### Features
+- Mini card editor: `show_counts`, `show_date`, `only_problems` and `expand_dns` are now in the visual editor of the mini card too — its detailed view (the zoom button) draws the full card with them.
+
+### Performance
+- The automatic discovery (Certificate Expiry, Whois, DNS IP) scans the entity registry once per registry change instead of on every state change of Home Assistant.
+
+### Maintenance
+- The commitlint config loads as an ES module: the `commit-msg` hook failed on every commit.
+
 ## 1.2.1 - 2026-11-18
 
 ### Fixes
