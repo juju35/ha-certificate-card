@@ -4,9 +4,14 @@
 
 ### Features
 - Mini card editor: `show_counts`, `show_date`, `only_problems` and `expand_dns` are now in the visual editor of the mini card too — its detailed view (the zoom button) draws the full card with them.
+- Header: the round icon carries the integration's logo as a badge at its lower right corner (Certificate Expiry, or Whois when only domain names are listed), as the other ha-* cards, on both cards and both headers.
+
+### Fixes
+- README: the night picture follows Home Assistant's dark theme alone (since 1.2.1), no longer "after sunset".
 
 ### Performance
 - The automatic discovery (Certificate Expiry, Whois, DNS IP) scans the entity registry once per registry change instead of on every state change of Home Assistant.
+- The status pill's fit check on the illustrated header reads the ground strip's position once and only measures the title, subtitle and pill (each ancestor's overflow read once), instead of every descendant with its computed style.
 
 ### Maintenance
 - The commitlint config loads as an ES module: the `commit-msg` hook failed on every commit.

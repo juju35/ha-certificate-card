@@ -1665,6 +1665,14 @@ const BASE_STYLE = `
   .logo { height: 40px; width: 40px; flex: none; border-radius: 50%; display: grid; place-items: center;
           color: var(--c, var(--cc-ok)); background: color-mix(in srgb, var(--c, var(--cc-ok)) 16%, transparent); }
   .logo .icon { width: 24px; height: 24px; }
+  /* Brand badge at the icon's lower right corner, as the other ha-* cards. */
+  .logo { position: relative; }
+  .logo .brand { position: absolute; right: -4px; bottom: -4px; width: 18px; height: 18px; border-radius: 5px; display: grid; place-items: center;
+                 box-sizing: border-box; background: #fff; color: #18bcf2;
+                 box-shadow: 0 0 0 1px var(--divider-color, rgba(0,0,0,.12)), 0 0 0 3px var(--card-background-color, #fff); }
+  .logo .brand.whois { color: #2a6db0; }
+  .logo .brand .icon { width: 13px; height: 13px; }
+  .banner .logo .brand { box-shadow: 0 0 0 1px rgba(13,42,69,.16), 0 1px 3px rgba(13,42,69,.18); }
   .titles { flex: 1 1 0; min-width: 5ch; }
   :host([hide-title]) .titles .name, :host([hide-subtitle]) .titles > .sub { display: none; }
   .chip { min-width: 0; overflow: hidden; line-height: 16px; box-sizing: border-box; }
@@ -1690,7 +1698,7 @@ const BASE_STYLE = `
   @container (max-width: 239px) {
     .header { gap: 6px; }
     :host(:not([mini])) .header .logo { height: 32px; width: 32px; }
-    :host(:not([mini])) .header .logo .icon { width: 18px; height: 18px; }
+    :host(:not([mini])) .header .logo > .icon { width: 18px; height: 18px; }
   }
   .name { font-size: 16px; font-weight: 500; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sub { font-size: 12px; color: var(--secondary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1940,15 +1948,23 @@ class CertificateBase extends HTMLElement {
         const banner = t.closest(".banner");
         if (banner) {
           const b = banner.getBoundingClientRect();
-          // Each element as it shows: its box cut by its ancestors that hide their overflow (a clamped line).
-          const out = [...t.querySelectorAll("*")].some((n) => {
+          // The top of the ground strip, read once (not once per element).
+          const floor = b.bottom - (parseFloat(getComputedStyle(banner).getPropertyValue("--g")) || 10) + 0.5;
+          // The title, the subtitle and the pill (their text) as they show: each box cut by its ancestors that hide
+          // their overflow (a clamped line); each ancestor's overflow read once.
+          const clips = new Map();
+          const clipped = (p) => {
+            if (!clips.has(p)) clips.set(p, getComputedStyle(p).overflowY !== "visible");
+            return clips.get(p);
+          };
+          const out = [...t.querySelectorAll(".name, .sub, .chip, .chip-label")].some((n) => {
             let { top, bottom } = n.getBoundingClientRect();
             for (let p = n.parentElement; p && p !== t; p = p.parentElement) {
-              if (getComputedStyle(p).overflowY === "visible") continue;
+              if (!clipped(p)) continue;
               top = Math.max(top, p.getBoundingClientRect().top);
               bottom = Math.min(bottom, p.getBoundingClientRect().bottom);
             }
-            return bottom - top > 0.5 && (top < b.top - 0.5 || bottom > b.bottom - (parseFloat(getComputedStyle(banner).getPropertyValue("--g")) || 10) + 0.5);
+            return bottom - top > 0.5 && (top < b.top - 0.5 || bottom > floor);
           });
           if (out) t.classList.add("dot-only");
         }
@@ -1992,7 +2008,11 @@ class CertificateBase extends HTMLElement {
     const st = summary(certs, dns);
     const label = esc(this._t(st.key));
     const sub = this._subtitle(certs, at);
-    const logo = `<div class="logo ${st.cls}" aria-hidden="true">${svgIcon(ICONS.certificate)}</div>`;
+    // The integration's brand as a badge on the round icon (the ha-* charter): Certificate Expiry, or Whois when only
+    // domain names are listed, in its own colour on a white tile.
+    const whois = certs.length > 0 && certs.every((c) => c.type === "domain");
+    const brand = `<span class="brand ${whois ? "whois" : "cert"}" title="${whois ? "Whois" : "Certificate Expiry"}">${svgIcon(whois ? ICONS.web : ICONS.certificate)}</span>`;
+    const logo = `<div class="logo ${st.cls}" aria-hidden="true">${svgIcon(ICONS.certificate)}${brand}</div>`;
     const name = `<div class="name">${esc(this._config.title || this._t("certificates"))}</div>`;
     const chip = `<span class="chip ${st.cls}${st.entity ? " clickable" : ""}"${st.entity ? ` role="button" tabindex="0" data-entity="${esc(st.entity)}"` : ""} title="${label}" aria-label="${label}"><span class="dot"></span><span class="chip-label">${label}</span></span>`;
     // The status pill right after the title, the subtitle under them.

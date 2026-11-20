@@ -303,3 +303,16 @@ test("status pill: on the title line, right after the title, with and without th
       assert.match(html, /title="Expired" aria-label="Expired"/, "label kept for the dot-only pill");
     }
 });
+
+test("header: the integration's brand as a badge on the round icon, full and mini card, both headers", () => {
+  for (const Cls of [CertificateCard, CertificateMiniCard])
+    for (const illustration of [true, false]) {
+      const { html } = render(Cls, { illustration });
+      assert.match(html, /<div class="logo [^"]*"[^>]*><svg class="icon "[^>]*>[\s\S]*?<\/svg><span class="brand cert" title="Certificate Expiry">/, `${Cls.name} ${illustration}`);
+    }
+  // Only domain names (no certificate): the Whois badge.
+  const certIds = new Set(Object.entries(entities).filter(([, e]) => e.platform === "cert_expiry").map(([id]) => id));
+  const keep = (o) => Object.fromEntries(Object.entries(o).filter(([id]) => !certIds.has(id) && !/cert_expiry/.test(id)));
+  const { html } = render(CertificateCard, { show_dns: false }, hass({ entities: keep(entities), states: keep(states) }));
+  assert.match(html, /class="brand whois" title="Whois"/);
+});
