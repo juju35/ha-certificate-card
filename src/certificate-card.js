@@ -2387,14 +2387,8 @@ class CertificateCardEditor extends CertificateEditorBase {
 
 class CertificateMiniCardEditor extends CertificateEditorBase {
   static get toggles() {
-    return [
-      ["illustration", true],
-      ["show_title", true],
-      ["show_subtitle", true],
-      ["show_domains", true],
-      ["show_dns", true],
-      ["zoom", true],
-    ];
+    // The full card's options, used by the detailed view the zoom button opens, and the button itself.
+    return [...CertificateCardEditor.toggles, ["zoom", true]];
   }
 
   static get numbers() {

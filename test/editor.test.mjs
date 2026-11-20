@@ -22,7 +22,8 @@ test("editor: every option of the README is in the form of its card", () => {
   const mini = new CertificateMiniCardEditor();
   mini._config = {};
   assert.deepEqual(names(mini._schema()), [
-    "title", "entities", "exclude", "domain_entities", "illustration", "show_title", "show_subtitle", "show_domains", "show_dns", "zoom", "warning_days", "critical_days", "max_items",
+    "title", "entities", "exclude", "domain_entities", "illustration", "show_title", "show_subtitle", "show_counts", "show_date", "only_problems", "show_domains", "show_dns",
+    "expand_dns", "zoom", "warning_days", "critical_days", "max_items",
     "dns_entities", "illustration_theme", "language",
   ]);
 });
@@ -41,4 +42,11 @@ test("editor: the entity pickers offer Certificate Expiry, Whois and DNS IP enti
 test("cards: each card names its own editor", () => {
   assert.match(String(CertificateCard.getConfigElement), /"certificate-card-editor"/);
   assert.match(String(CertificateMiniCard.getConfigElement), /"certificate-mini-card-editor"/);
+});
+
+test("editor: the mini card's editor offers the full-card options its detailed view uses", () => {
+  const mini = new CertificateMiniCardEditor();
+  mini._config = {};
+  const shown = names(mini._schema());
+  for (const key of ["show_counts", "show_date", "only_problems", "expand_dns"]) assert.ok(shown.includes(key), key);
 });

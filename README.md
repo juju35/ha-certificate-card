@@ -164,12 +164,12 @@ language: fr
 | `domain_entities` | both | Every Whois *Days until expiration* sensor | Domain names to list: entity ids, or `entity` / `name` pairs |
 | `warning_days` | both | `30` | Days left under which a certificate turns orange |
 | `critical_days` | both | `7` | Days left under which a certificate turns red |
-| `show_counts` | full | `true` | Valid / expiring / expired counters |
-| `show_date` | full | `true` | Expiry date under each certificate (`false`: *in 18 days* instead) |
-| `only_problems` | full | `false` | Only list the certificates and domain names that are expiring soon, expired or invalid |
+| `show_counts` | both | `true` | Valid / expiring / expired counters |
+| `show_date` | both | `true` | Expiry date under each certificate (`false`: *in 18 days* instead) |
+| `only_problems` | both | `false` | Only list the certificates and domain names that are expiring soon, expired or invalid |
 | `show_dns` | both | `true` | DNS checks (shown when there is at least one) |
 | `dns_entities` | both | Every DNS IP sensor | DNS checks to show: DNS IP sensors, Ping or other connectivity binary sensors; entity ids or `entity` / `name` pairs |
-| `expand_dns` | full | `false` | DNS checks expanded when the card loads (click the section title to fold / unfold) |
+| `expand_dns` | both | `false` | DNS checks expanded when the card loads (click the section title to fold / unfold) |
 | `max_items` | mini | `3` | Number of certificates and domain names listed, the soonest to expire first |
 | `zoom` | mini | `true` | Detail button at the top right: switches to the full card and back (`false` removes it) |
 | `language` | both | Auto | Force language: `en`, `fr`, `de`, `es`, `sr`, `sr-Latn`, `it`, `nl`, `pt`, `pl`, `ro`, `da`, `sv`, `bg`, `ru`, `uk`, `hu`, `sk`, `cs`, `sl`, `lv` or `el` (auto-detects from HA settings) |
