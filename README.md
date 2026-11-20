@@ -37,7 +37,7 @@ Certificates, domain names and DNS IP sensors are **discovered automatically**, 
 ## Features
 
 - Two cards: a full **Certificate Card** and a compact **Certificate Mini Card**
-- Animated illustrated header on both cards: a certificate framed on the wall and a padlock on the desk, following the overall status — *valid* (green padlock, gold seal, sparkles), *expiring soon* (an hourglass running), *expired* or *invalid* (padlock open, certificate askew with a red stamp), unknown (grey); the icon takes the status colour. Night picture after sunset or with the dark theme (even while the sun is up), or forced with `illustration_theme`; `illustration: false` keeps a classic header
+- Animated illustrated header on both cards: a certificate framed on the wall and a padlock on the desk, following the overall status — *valid* (green padlock, gold seal, sparkles), *expiring soon* (an hourglass running), *expired* or *invalid* (padlock open, certificate askew with a red stamp), unknown (grey); the icon takes the status colour and carries the integration's logo as a badge (Certificate Expiry, or Whois when only domain names are listed). Night picture with Home Assistant's dark theme (a light theme keeps the day picture after sunset), or forced with `illustration_theme`; `illustration: false` keeps a classic header
 - Automatic discovery of every Certificate Expiry sensor; pick, rename or hide certificates if you prefer
 - Certificates sorted by expiry, soonest first, each with its expiry date, the days left as a badge and a bar (full bar: 90 days, the lifetime of a Let's Encrypt certificate)
 - Domain names watched by the Whois integration in their own section, with their expiry date, registrar, days left and a bar (full bar: one year); they count in the header status and the counters, and the mini card lists them with the certificates, the soonest first
@@ -164,12 +164,12 @@ language: fr
 | `domain_entities` | both | Every Whois *Days until expiration* sensor | Domain names to list: entity ids, or `entity` / `name` pairs |
 | `warning_days` | both | `30` | Days left under which a certificate turns orange |
 | `critical_days` | both | `7` | Days left under which a certificate turns red |
-| `show_counts` | full | `true` | Valid / expiring / expired counters |
-| `show_date` | full | `true` | Expiry date under each certificate (`false`: *in 18 days* instead) |
-| `only_problems` | full | `false` | Only list the certificates and domain names that are expiring soon, expired or invalid |
+| `show_counts` | both | `true` | Valid / expiring / expired counters |
+| `show_date` | both | `true` | Expiry date under each certificate (`false`: *in 18 days* instead) |
+| `only_problems` | both | `false` | Only list the certificates and domain names that are expiring soon, expired or invalid |
 | `show_dns` | both | `true` | DNS checks (shown when there is at least one) |
 | `dns_entities` | both | Every DNS IP sensor | DNS checks to show: DNS IP sensors, Ping or other connectivity binary sensors; entity ids or `entity` / `name` pairs |
-| `expand_dns` | full | `false` | DNS checks expanded when the card loads (click the section title to fold / unfold) |
+| `expand_dns` | both | `false` | DNS checks expanded when the card loads (click the section title to fold / unfold) |
 | `max_items` | mini | `3` | Number of certificates and domain names listed, the soonest to expire first |
 | `zoom` | mini | `true` | Detail button at the top right: switches to the full card and back (`false` removes it) |
 | `language` | both | Auto | Force language: `en`, `fr`, `de`, `es`, `sr`, `sr-Latn`, `it`, `nl`, `pt`, `pl`, `ro`, `da`, `sv`, `bg`, `ru`, `uk`, `hu`, `sk`, `cs`, `sl`, `lv` or `el` (auto-detects from HA settings) |

@@ -35,6 +35,18 @@ test("discovery: entities, exclude and the entity id fallback without a registry
   same(findCerts(bare).map((i) => i.entity), ["sensor.cert_expiry_timestamp_example_org"]);
 });
 
+test("discovery: the registry scan follows a new registry, and the states of the same one", () => {
+  const reg = { "sensor.a": { entity_id: "sensor.a", platform: "cert_expiry" } };
+  const st = { "sensor.a": { state: iso(10), attributes: {} } };
+  same(findCerts({ entities: reg, states: st }).map((i) => i.entity), ["sensor.a"]);
+  // Same registry, entity gone from the states: not listed.
+  same(findCerts({ entities: reg, states: {} }), []);
+  // A new registry object (an entity added): scanned again.
+  const reg2 = { ...reg, "sensor.b": { entity_id: "sensor.b", platform: "cert_expiry" } };
+  const st2 = { ...st, "sensor.b": { state: iso(20), attributes: {} } };
+  same(findCerts({ entities: reg2, states: st2 }).map((i) => i.entity), ["sensor.a", "sensor.b"]);
+});
+
 test("discovery: DNS IP sensors by default, dns_entities by hand, none with show_dns: false", () => {
   assert.equal(findDns(hass()).length, 3);
   same(findDns(hass(), { dns_entities: ["binary_sensor.passerelle"] }), [{ entity: "binary_sensor.passerelle" }]);
@@ -290,4 +302,17 @@ test("status pill: on the title line, right after the title, with and without th
       assert.match(html, /<div class="trow"><div class="name">Certificates<\/div><span class="chip crit[^"]*"[^>]*><span class="dot"><\/span><span class="chip-label">Expired<\/span><\/span><\/div>/);
       assert.match(html, /title="Expired" aria-label="Expired"/, "label kept for the dot-only pill");
     }
+});
+
+test("header: the integration's brand as a badge on the round icon, full and mini card, both headers", () => {
+  for (const Cls of [CertificateCard, CertificateMiniCard])
+    for (const illustration of [true, false]) {
+      const { html } = render(Cls, { illustration });
+      assert.match(html, /<div class="logo [^"]*"[^>]*><svg class="icon "[^>]*>[\s\S]*?<\/svg><span class="brand cert" title="Certificate Expiry">/, `${Cls.name} ${illustration}`);
+    }
+  // Only domain names (no certificate): the Whois badge.
+  const certIds = new Set(Object.entries(entities).filter(([, e]) => e.platform === "cert_expiry").map(([id]) => id));
+  const keep = (o) => Object.fromEntries(Object.entries(o).filter(([id]) => !certIds.has(id) && !/cert_expiry/.test(id)));
+  const { html } = render(CertificateCard, { show_dns: false }, hass({ entities: keep(entities), states: keep(states) }));
+  assert.match(html, /class="brand whois" title="Whois"/);
 });
