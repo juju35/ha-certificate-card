@@ -1354,11 +1354,25 @@ const items = (list) =>
     .filter(Boolean);
 
 // Entities of an integration, from the entity registry (whatever their ids and the language), in the given domain.
-const byPlatform = (hass, platform, domain) =>
-  Object.values(hass?.entities || {})
-    .filter((e) => e.platform === platform && e.entity_id.startsWith(`${domain}.`) && !e.hidden && hass.states?.[e.entity_id])
-    .map((e) => e.entity_id)
-    .sort();
+// The registry scan is kept per registry object (Home Assistant replaces it only when the registry changes): the card
+// looks its entities up on every state change, which should not walk thousands of entries each time.
+const platformCache = new WeakMap();
+const byPlatform = (hass, platform, domain) => {
+  const reg = hass?.entities;
+  if (!reg) return [];
+  let cache = platformCache.get(reg);
+  if (!cache) platformCache.set(reg, (cache = new Map()));
+  const key = `${platform}|${domain}`;
+  let ids = cache.get(key);
+  if (!ids) {
+    ids = Object.values(reg)
+      .filter((e) => e.platform === platform && e.entity_id.startsWith(`${domain}.`) && !e.hidden)
+      .map((e) => e.entity_id)
+      .sort();
+    cache.set(key, ids);
+  }
+  return ids.filter((id) => hass.states?.[id]);
+};
 
 // The certificates the card lists: `entities` when set, else every Certificate Expiry sensor (from the registry,
 // else by its entity id when the registry is not there), minus `exclude`.

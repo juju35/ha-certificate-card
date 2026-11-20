@@ -35,6 +35,18 @@ test("discovery: entities, exclude and the entity id fallback without a registry
   same(findCerts(bare).map((i) => i.entity), ["sensor.cert_expiry_timestamp_example_org"]);
 });
 
+test("discovery: the registry scan follows a new registry, and the states of the same one", () => {
+  const reg = { "sensor.a": { entity_id: "sensor.a", platform: "cert_expiry" } };
+  const st = { "sensor.a": { state: iso(10), attributes: {} } };
+  same(findCerts({ entities: reg, states: st }).map((i) => i.entity), ["sensor.a"]);
+  // Same registry, entity gone from the states: not listed.
+  same(findCerts({ entities: reg, states: {} }), []);
+  // A new registry object (an entity added): scanned again.
+  const reg2 = { ...reg, "sensor.b": { entity_id: "sensor.b", platform: "cert_expiry" } };
+  const st2 = { ...st, "sensor.b": { state: iso(20), attributes: {} } };
+  same(findCerts({ entities: reg2, states: st2 }).map((i) => i.entity), ["sensor.a", "sensor.b"]);
+});
+
 test("discovery: DNS IP sensors by default, dns_entities by hand, none with show_dns: false", () => {
   assert.equal(findDns(hass()).length, 3);
   same(findDns(hass(), { dns_entities: ["binary_sensor.passerelle"] }), [{ entity: "binary_sensor.passerelle" }]);
