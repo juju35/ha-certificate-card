@@ -56,10 +56,10 @@ Certificates, domain names and DNS IP sensors are **discovered automatically**, 
 
 | Integration | What the cards show |
 |---|---|
-| [Certificate Expiry](https://www.home-assistant.io/integrations/cert_expiry/) (built in) | One row per certificate: host name, expiry date, days left, valid / expiring / expired / invalid with its error. Found automatically through the entity registry |
-| [Whois](https://www.home-assistant.io/integrations/whois/) (built in) | One row per domain name, in a *Domain names* section: expiry date, registrar, days left, valid / expiring / expired. Found automatically through the entity registry (the *Days until expiration* sensor of each domain) |
-| [DNS IP](https://www.home-assistant.io/integrations/dnsip/) (built in) | One DNS check per sensor: the resolved address, or *Not resolved*. Found automatically through the entity registry |
-| [Ping](https://www.home-assistant.io/integrations/ping/) (built in), or any connectivity binary sensor | One DNS check per entity: *Reachable* or *Unreachable*. Listed by hand with `dns_entities` (a Ping sensor often tracks a phone or a computer, not a server) |
+| <img src="https://raw.githubusercontent.com/juju35/ha-certificate-card/main/images/cert_expiry.svg" alt="" width="16"> [Certificate Expiry](https://www.home-assistant.io/integrations/cert_expiry/) (built in) | One row per certificate: host name, expiry date, days left, valid / expiring / expired / invalid with its error. Found automatically through the entity registry |
+| <img src="https://raw.githubusercontent.com/juju35/ha-certificate-card/main/images/whois.png" alt="" width="16"> [Whois](https://www.home-assistant.io/integrations/whois/) (built in) | One row per domain name, in a *Domain names* section: expiry date, registrar, days left, valid / expiring / expired. Found automatically through the entity registry (the *Days until expiration* sensor of each domain) |
+| <img src="https://raw.githubusercontent.com/juju35/ha-certificate-card/main/images/dnsip.svg" alt="" width="16"> [DNS IP](https://www.home-assistant.io/integrations/dnsip/) (built in) | One DNS check per sensor: the resolved address, or *Not resolved*. Found automatically through the entity registry |
+| <img src="https://raw.githubusercontent.com/juju35/ha-certificate-card/main/images/ping.svg" alt="" width="16"> [Ping](https://www.home-assistant.io/integrations/ping/) (built in), or any connectivity binary sensor | One DNS check per entity: *Reachable* or *Unreachable*. Listed by hand with `dns_entities` (a Ping sensor often tracks a phone or a computer, not a server) |
 
 Any other timestamp sensor holding an expiry date can be listed with `entities`, and so can a sensor holding a number of days left.
 
