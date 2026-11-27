@@ -4,7 +4,7 @@
 
 export const BASE_STYLE = `
   :host { --cc-accent: #2e7d32; --cc-ok: var(--success-color, #43a047); --cc-warn: var(--warning-color, #ffa600);
-          --cc-crit: var(--error-color, #db4437); --cc-idle: var(--disabled-text-color, #9e9e9e); }
+          --cc-crit: var(--error-color, #db4437); --cc-idle: var(--secondary-text-color, #9e9e9e); }
   :host { display: block; }
   ha-card { overflow: hidden; container: cc-card / inline-size; }
   /* A size container has no content width: this empty, zero-height grid gives the card a natural width of 300 px with
